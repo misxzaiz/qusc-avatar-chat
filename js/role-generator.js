@@ -102,6 +102,21 @@ class RoleGenerator {
             StorageManager.saveSettings({ preserveContext: false });
         }
         
+        // 自动将AI创建的角色加入角色管理器
+        if (window.uiManager && window.uiManager.roleManager) {
+            const savedRole = window.uiManager.roleManager.saveRole({
+                ...roleData,
+                category: 'custom',
+                tags: ['AI生成'],
+                author: 'ai'
+            });
+            
+            // 更新角色管理器显示
+            if (window.uiManager.updateRoleStats) {
+                window.uiManager.updateRoleStats();
+            }
+        }
+        
         // 保存角色数据
         StorageManager.saveCurrentRole(roleData);
         

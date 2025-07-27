@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/avatar.css">
     <link rel="stylesheet" href="styles/chat.css">
+    <link rel="stylesheet" href="styles/role-manager.css">
+    <link rel="stylesheet" href="styles/voice-modes.css">
     <link rel="stylesheet" href="styles/mobile.css">
 </head>
 <body>
@@ -14,6 +16,7 @@
         <div class="header">
             <h1>AI聊天助手</h1>
             <div class="header-controls">
+                <button id="voice-output-btn" class="btn btn-icon voice-output-btn" title="语音输出">🔊</button>
                 <button id="role-btn" class="btn btn-icon">🤖</button>
                 <button id="history-btn" class="btn btn-icon">📚</button>
                 <button id="settings-btn" class="btn btn-icon">⚙️</button>
@@ -21,6 +24,7 @@
         </div>
 
         <div class="main-container">
+            <button id="avatar-toggle-btn" class="avatar-toggle-btn" title="隐藏/显示头像">👁️</button>
             <div class="avatar-section">
                 <div id="avatar" class="avatar">
                     <div class="avatar-face">
@@ -46,9 +50,11 @@
 
                 <div class="input-section">
                     <div class="chat-input">
-                        <textarea id="message-input" placeholder="输入消息..." class="input-field"></textarea>
-                        <button id="voice-btn" class="btn btn-voice" title="语音输入">🎤</button>
+                        <textarea id="message-input" placeholder="输入消息...或切换到语音模式" class="input-field"></textarea>
                         <button id="send-btn" class="btn btn-primary">发送</button>
+                        <div class="voice-output-controls">
+                            <button id="voice-settings-btn" class="voice-output-btn" title="语音设置">⚙️</button>
+                        </div>
                     </div>
                     <div id="voice-status" class="voice-status hidden">
                         <div class="voice-indicator">
@@ -64,16 +70,81 @@
     </div>
 
     <div id="role-modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content role-manager-modal">
             <span class="close">&times;</span>
-            <h2>🤖 角色生成</h2>
-            <div class="role-generator">
-                <div class="setting-item">
-                    <label for="role-keywords">输入关键词生成角色:</label>
-                    <input type="text" id="role-keywords" placeholder="例如: 猫咪、程序员、老师..." class="input-field">
+            <h2>🤖 角色管理中心</h2>
+            
+            <!-- 角色管理工具栏 -->
+            <div class="role-toolbar">
+                <div class="role-search-container">
+                    <input type="text" id="role-search" placeholder="搜索角色..." class="role-search-input">
+                    <button id="role-search-btn" class="btn btn-icon">🔍</button>
                 </div>
-                <button id="generate-role-btn" class="btn btn-primary">生成角色</button>
-                <div id="role-generation-status" class="role-status"></div>
+                
+                <div class="role-filters">
+                    <select id="role-category-filter" class="role-filter-select">
+                        <option value="all">所有分类</option>
+                        <option value="favorites">我的收藏</option>
+                        <option value="work">工作助手</option>
+                        <option value="study">学习教育</option>
+                        <option value="creative">创意写作</option>
+                        <option value="entertainment">娱乐休闲</option>
+                        <option value="life">生活服务</option>
+                        <option value="tech">技术开发</option>
+                        <option value="health">健康医疗</option>
+                        <option value="custom">自定义</option>
+                    </select>
+                    
+                    <select id="role-sort" class="role-filter-select">
+                        <option value="name-asc">名称 A-Z</option>
+                        <option value="name-desc">名称 Z-A</option>
+                        <option value="created-desc">最新创建</option>
+                        <option value="created-asc">最早创建</option>
+                        <option value="rating-desc">评分最高</option>
+                        <option value="usage-desc">使用最多</option>
+                    </select>
+                </div>
+                
+                <div class="role-actions">
+                    <button id="create-role-btn" class="btn btn-primary">➕ 新建角色</button>
+                    <button id="import-roles-btn" class="btn btn-secondary">📥 导入</button>
+                    <button id="export-roles-btn" class="btn btn-secondary">📤 导出</button>
+                    <button id="preset-roles-btn" class="btn btn-secondary">🎭 预设角色</button>
+                </div>
+            </div>
+            
+            <!-- 角色统计信息 -->
+            <div class="role-stats-bar">
+                <div class="role-stat-item">
+                    <span class="role-stat-number" id="total-roles-count">0</span>
+                    <span class="role-stat-label">总角色</span>
+                </div>
+                <div class="role-stat-item">
+                    <span class="role-stat-number" id="favorite-roles-count">0</span>
+                    <span class="role-stat-label">收藏</span>
+                </div>
+                <div class="role-stat-item">
+                    <span class="role-stat-number" id="categories-count">0</span>
+                    <span class="role-stat-label">分类</span>
+                </div>
+            </div>
+            
+            <!-- 角色网格 -->
+            <div id="roles-grid" class="roles-grid">
+                <!-- 角色卡片将在这里动态生成 -->
+            </div>
+            
+            <!-- 快速角色生成器 -->
+            <div class="quick-role-generator">
+                <h3>🚀 快速生成角色</h3>
+                <div class="role-generator">
+                    <div class="setting-item">
+                        <label for="role-keywords">输入关键词生成角色:</label>
+                        <input type="text" id="role-keywords" placeholder="例如: 猫咪、程序员、老师..." class="input-field">
+                    </div>
+                    <button id="generate-role-btn" class="btn btn-primary">生成角色</button>
+                    <div id="role-generation-status" class="role-status"></div>
+                </div>
                 
                 <div class="role-commands">
                     <div class="setting-item">
@@ -93,6 +164,7 @@
                 </div>
             </div>
             
+            <!-- 当前角色显示 -->
             <div id="current-role-display" class="current-role-display">
                 <!-- 当前角色信息会在这里显示 -->
             </div>
@@ -103,20 +175,85 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>设置</h2>
-            <div class="setting-item">
-                <label for="api-key">DeepSeek API Key:</label>
-                <input type="password" id="api-key" placeholder="请输入DeepSeek API Key" class="input-field">
-            </div>
-            <div class="setting-item">
-                <label for="preserve-context">角色切换时保留对话上下文:</label>
-                <div class="toggle-container">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="preserve-context">
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <span class="toggle-label">开启后切换角色不会清空聊天记录</span>
+            
+            <!-- API设置 -->
+            <div class="setting-group">
+                <h3>API设置</h3>
+                <div class="setting-item">
+                    <label for="api-key">DeepSeek API Key:</label>
+                    <input type="password" id="api-key" placeholder="请输入DeepSeek API Key" class="input-field">
                 </div>
             </div>
+            
+            <!-- 对话设置 -->
+            <div class="setting-group">
+                <h3>对话设置</h3>
+                <div class="setting-item">
+                    <label for="preserve-context">角色切换时保留对话上下文:</label>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="preserve-context">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">开启后切换角色不会清空聊天记录</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 语音输出设置 -->
+            <div class="setting-group">
+                <h3>语音输出设置</h3>
+                <div class="setting-item">
+                    <label for="voice-output-enabled">启用语音输出:</label>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="voice-output-enabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">AI回复时自动播放语音</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="voice-select">选择语音:</label>
+                    <select id="voice-select" class="voice-select">
+                        <option value="">默认语音</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label for="voice-rate">语速:</label>
+                    <input type="range" id="voice-rate" class="voice-range-input" min="0.5" max="2" step="0.1" value="1">
+                    <span id="voice-rate-value">1.0</span>
+                </div>
+                <div class="setting-item">
+                    <label for="voice-pitch">音调:</label>
+                    <input type="range" id="voice-pitch" class="voice-range-input" min="0.5" max="2" step="0.1" value="1">
+                    <span id="voice-pitch-value">1.0</span>
+                </div>
+                <div class="setting-item">
+                    <label for="voice-volume">音量:</label>
+                    <input type="range" id="voice-volume" class="voice-range-input" min="0" max="1" step="0.1" value="1">
+                    <span id="voice-volume-value">1.0</span>
+                </div>
+                <div class="setting-item">
+                    <button id="voice-test-btn" class="voice-test-btn">测试语音</button>
+                </div>
+            </div>
+            
+            <!-- 界面设置 -->
+            <div class="setting-group">
+                <h3>界面设置</h3>
+                <div class="setting-item">
+                    <label for="hide-avatar">隐藏AI头像:</label>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="hide-avatar">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">隐藏左侧的AI卡通头像</span>
+                    </div>
+                </div>
+            </div>
+            
             <button id="save-settings" class="btn btn-primary">保存设置</button>
         </div>
     </div>
@@ -135,8 +272,10 @@
     <script src="js/api.js"></script>
     <script src="js/avatar.js"></script>
     <script src="js/speech.js"></script>
+    <script src="js/voice-manager.js"></script>
     <script src="js/chat.js"></script>
     <script src="js/role-generator.js"></script>
+    <script src="js/role-manager.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
 </body>

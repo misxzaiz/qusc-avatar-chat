@@ -4,11 +4,25 @@ class UIManager {
         this.voiceButton = null;
         this.voiceStatus = null;
         this.messageInput = null;
+        this.roleManager = null;
+        this.voiceOutputManager = null;
+        this.inputModeManager = null;
         
+        // 延迟初始化以确保DOM完全加载
+        setTimeout(() => {
+            this.initialize();
+        }, 100);
+    }
+
+    initialize() {
         this.setupModals();
         this.setupSettings();
         this.setupHistory();
         this.setupVoiceInput();
+        this.setupRoleManager();
+        this.setupVoiceOutput();
+        this.setupInputModes();
+        this.setupAvatarToggle();
         this.loadSettings();
     }
 
@@ -17,9 +31,9 @@ class UIManager {
         this.voiceStatus = document.getElementById('voice-status');
         this.messageInput = document.getElementById('message-input');
 
+        // 如果语音按钮不存在，创建语音管理器但不设置点击事件
         if (!this.voiceButton) {
-            console.warn('语音按钮未找到');
-            return;
+            console.log('语音按钮未找到，使用新的语音模式管理');
         }
 
         // 初始化语音管理器
@@ -27,7 +41,10 @@ class UIManager {
 
         // 检查浏览器支持
         if (!this.speechManager.getIsSupported()) {
-            this.voiceButton.style.display = 'none';
+            console.warn('当前浏览器不支持语音识别');
+            if (this.voiceButton) {
+                this.voiceButton.style.display = 'none';
+            }
             return;
         }
 
@@ -48,12 +65,90 @@ class UIManager {
             this.onVoiceError(error);
         });
 
-        // 语音按钮点击事件
-        this.voiceButton.addEventListener('click', () => {
-            this.toggleVoiceRecording();
-        });
+        // 只有当语音按钮存在时才设置点击事件
+        if (this.voiceButton) {
+            this.voiceButton.addEventListener('click', () => {
+                this.toggleVoiceRecording();
+            });
+        }
 
         console.log('语音输入功能初始化完成');
+    }
+
+    setupRoleManager() {
+        // 初始化角色管理器
+        this.roleManager = new RoleManager();
+        
+        // 设置预设角色按钮
+        const presetRolesBtn = document.getElementById('preset-roles-btn');
+        if (presetRolesBtn) {
+            presetRolesBtn.addEventListener('click', () => {
+                this.roleManager.addPresetRoles();
+                this.showNotification('预设角色已添加', 'success');
+            });
+        }
+
+        // 设置新建角色按钮
+        const createRoleBtn = document.getElementById('create-role-btn');
+        if (createRoleBtn) {
+            createRoleBtn.addEventListener('click', () => {
+                this.showCreateRoleModal();
+            });
+        }
+    }
+
+    setupVoiceOutput() {
+        // 初始化语音输出管理器
+        this.voiceOutputManager = new VoiceOutputManager();
+        
+        // 设置语音输出按钮 - 使用header中的按钮
+        const voiceOutputBtn = document.getElementById('voice-output-btn');
+
+        if (voiceOutputBtn) {
+            voiceOutputBtn.addEventListener('click', () => {
+                this.toggleVoiceOutput();
+            });
+        }
+        
+        // 设置语音输出回调
+        this.voiceOutputManager.setOnSpeakStart(() => {
+            if (voiceOutputBtn) {
+                voiceOutputBtn.classList.add('playing');
+            }
+        });
+        
+        this.voiceOutputManager.setOnSpeakEnd(() => {
+            if (voiceOutputBtn) {
+                voiceOutputBtn.classList.remove('playing');
+            }
+        });
+    }
+
+    setupInputModes() {
+        // 初始化输入模式管理器
+        this.inputModeManager = new InputModeManager();
+    }
+
+    setupAvatarToggle() {
+        const avatarToggleBtn = document.getElementById('avatar-toggle-btn');
+        const avatarSection = document.querySelector('.avatar-section');
+        const mainContainer = document.querySelector('.main-container');
+        
+        if (avatarToggleBtn && avatarSection && mainContainer) {
+            avatarToggleBtn.addEventListener('click', () => {
+                const isHidden = avatarSection.classList.toggle('hidden');
+                mainContainer.classList.toggle('avatar-hidden', isHidden);
+                
+                // 更新按钮图标
+                avatarToggleBtn.textContent = isHidden ? '👁️‍🗨️' : '👁️';
+                avatarToggleBtn.title = isHidden ? '显示头像' : '隐藏头像';
+                
+                // 保存设置
+                StorageManager.saveSettings({ hideAvatar: isHidden });
+                
+                this.showNotification(isHidden ? '头像已隐藏' : '头像已显示', 'info');
+            });
+        }
     }
 
     toggleVoiceRecording() {
@@ -162,7 +257,7 @@ class UIManager {
         // 打开角色模态框
         roleBtn.addEventListener('click', () => {
             roleModal.style.display = 'block';
-            this.loadRoleToModal();
+            this.loadRoleManagerToModal();
         });
 
         // 关闭模态框
@@ -215,6 +310,23 @@ class UIManager {
         if (settings.apiKey && window.chatManager) {
             window.chatManager.apiManager.updateSettings(settings);
         }
+
+        // 恢复头像显示状态
+        if (settings.hideAvatar) {
+            const avatarSection = document.querySelector('.avatar-section');
+            const mainContainer = document.querySelector('.main-container');
+            const avatarToggleBtn = document.getElementById('avatar-toggle-btn');
+            
+            if (avatarSection && mainContainer) {
+                avatarSection.classList.add('hidden');
+                mainContainer.classList.add('avatar-hidden');
+                
+                if (avatarToggleBtn) {
+                    avatarToggleBtn.textContent = '👁️‍🗨️';
+                    avatarToggleBtn.title = '显示头像';
+                }
+            }
+        }
     }
 
     loadSettingsToModal() {
@@ -231,14 +343,167 @@ class UIManager {
         if (preserveContextCheckbox) {
             preserveContextCheckbox.checked = settings.preserveContext || false;
         }
+        
+        // 设置头像隐藏选项
+        const hideAvatarCheckbox = document.getElementById('hide-avatar');
+        if (hideAvatarCheckbox) {
+            hideAvatarCheckbox.checked = settings.hideAvatar || true;
+        }
+        
+        // 加载语音输出设置
+        this.loadVoiceSettingsToModal();
+    }
+
+    loadVoiceSettingsToModal() {
+        if (!this.voiceOutputManager) return;
+        
+        const voiceSettings = this.voiceOutputManager.getSettings();
+        
+        // 语音输出开关
+        const voiceOutputEnabledCheckbox = document.getElementById('voice-output-enabled');
+        if (voiceOutputEnabledCheckbox) {
+            voiceOutputEnabledCheckbox.checked = voiceSettings.enabled || false;
+        }
+        
+        // 语音选择
+        const voiceSelect = document.getElementById('voice-select');
+        if (voiceSelect) {
+            // 清空现有选项
+            voiceSelect.innerHTML = '<option value="">默认语音</option>';
+            
+            // 添加可用语音
+            const voices = this.voiceOutputManager.getVoices();
+            voices.forEach(voice => {
+                const option = document.createElement('option');
+                option.value = voice.name;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                if (voice.name === voiceSettings.voice) {
+                    option.selected = true;
+                }
+                voiceSelect.appendChild(option);
+            });
+        }
+        
+        // 语速
+        const voiceRateSlider = document.getElementById('voice-rate');
+        const voiceRateValue = document.getElementById('voice-rate-value');
+        if (voiceRateSlider && voiceRateValue) {
+            voiceRateSlider.value = voiceSettings.rate || 1.0;
+            voiceRateValue.textContent = (voiceSettings.rate || 1.0).toFixed(1);
+            
+            voiceRateSlider.addEventListener('input', (e) => {
+                voiceRateValue.textContent = parseFloat(e.target.value).toFixed(1);
+            });
+        }
+        
+        // 音调
+        const voicePitchSlider = document.getElementById('voice-pitch');
+        const voicePitchValue = document.getElementById('voice-pitch-value');
+        if (voicePitchSlider && voicePitchValue) {
+            voicePitchSlider.value = voiceSettings.pitch || 1.0;
+            voicePitchValue.textContent = (voiceSettings.pitch || 1.0).toFixed(1);
+            
+            voicePitchSlider.addEventListener('input', (e) => {
+                voicePitchValue.textContent = parseFloat(e.target.value).toFixed(1);
+            });
+        }
+        
+        // 音量
+        const voiceVolumeSlider = document.getElementById('voice-volume');
+        const voiceVolumeValue = document.getElementById('voice-volume-value');
+        if (voiceVolumeSlider && voiceVolumeValue) {
+            voiceVolumeSlider.value = voiceSettings.volume || 1.0;
+            voiceVolumeValue.textContent = (voiceSettings.volume || 1.0).toFixed(1);
+            
+            voiceVolumeSlider.addEventListener('input', (e) => {
+                voiceVolumeValue.textContent = parseFloat(e.target.value).toFixed(1);
+            });
+        }
+        
+        // 测试语音按钮
+        const voiceTestBtn = document.getElementById('voice-test-btn');
+        if (voiceTestBtn) {
+            voiceTestBtn.addEventListener('click', () => {
+                this.testVoiceOutput();
+            });
+        }
+    }
+
+    toggleVoiceOutput() {
+        const isEnabled = this.voiceOutputManager.isVoiceEnabled();
+        this.voiceOutputManager.setEnabled(!isEnabled);
+        
+        const voiceOutputBtn = document.getElementById('voice-output-btn');
+        if (voiceOutputBtn) {
+            voiceOutputBtn.classList.toggle('active', !isEnabled);
+            voiceOutputBtn.title = !isEnabled ? '关闭语音输出' : '开启语音输出';
+        }
+        
+        this.showNotification(!isEnabled ? '语音输出已开启' : '语音输出已关闭', 'info');
+    }
+
+    showVoiceSettings() {
+        // 在设置模态框中切换到语音设置
+        const settingsModal = document.getElementById('settings-modal');
+        if (settingsModal) {
+            settingsModal.style.display = 'block';
+            this.loadSettingsToModal();
+            
+            // 滚动到语音设置部分
+            setTimeout(() => {
+                const voiceSettings = settingsModal.querySelector('.setting-group:nth-child(3)');
+                if (voiceSettings) {
+                    voiceSettings.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+    }
+
+    testVoiceOutput() {
+        const testText = '这是语音输出测试，您好！';
+        
+        // 获取当前设置
+        const rate = parseFloat(document.getElementById('voice-rate')?.value || 1.0);
+        const pitch = parseFloat(document.getElementById('voice-pitch')?.value || 1.0);
+        const volume = parseFloat(document.getElementById('voice-volume')?.value || 1.0);
+        
+        this.voiceOutputManager.speak(testText, { rate, pitch, volume });
+    }
+
+    onInputModeChanged(mode) {
+        // 输入模式切换时的回调
+        console.log('输入模式已切换到:', mode);
+        
+        if (mode === 'voice') {
+            // 切换到语音模式时的处理
+            if (window.avatarController) {
+                window.avatarController.setEmotion('listening');
+            }
+        } else {
+            // 切换到文字模式时的处理
+            if (window.avatarController) {
+                window.avatarController.setEmotion('neutral');
+            }
+        }
+    }
+
+    // 为聊天管理器提供语音输出接口
+    speakAIResponse(message) {
+        if (this.voiceOutputManager && this.voiceOutputManager.isVoiceEnabled()) {
+            this.voiceOutputManager.speakAIResponse(message);
+        }
     }
 
     async saveSettings() {
         const apiKeyInput = document.getElementById('api-key');
         const preserveContextCheckbox = document.getElementById('preserve-context');
+        const hideAvatarCheckbox = document.getElementById('hide-avatar');
+        const voiceOutputEnabledCheckbox = document.getElementById('voice-output-enabled');
         
         const apiKey = apiKeyInput?.value.trim() || '';
         const preserveContext = preserveContextCheckbox?.checked || false;
+        const hideAvatar = hideAvatarCheckbox?.checked || false;
+        const voiceOutputEnabled = voiceOutputEnabledCheckbox?.checked || false;
 
         if (!apiKey) {
             this.showNotification('请输入DeepSeek API密钥', 'error');
@@ -247,7 +512,9 @@ class UIManager {
 
         const settings = {
             apiKey: apiKey,
-            preserveContext: preserveContext
+            preserveContext: preserveContext,
+            hideAvatar: hideAvatar,
+            voiceOutputEnabled: voiceOutputEnabled
         };
 
         // 保存设置
@@ -258,8 +525,42 @@ class UIManager {
             window.chatManager.apiManager.updateSettings(settings);
         }
 
+        // 保存语音输出设置
+        if (this.voiceOutputManager) {
+            const voiceSettings = {
+                enabled: voiceOutputEnabled,
+                voice: document.getElementById('voice-select')?.value || '',
+                rate: parseFloat(document.getElementById('voice-rate')?.value || 1.0),
+                pitch: parseFloat(document.getElementById('voice-pitch')?.value || 1.0),
+                volume: parseFloat(document.getElementById('voice-volume')?.value || 1.0)
+            };
+            
+            this.voiceOutputManager.setVoiceSettings(voiceSettings);
+            
+            // 更新语音输出按钮状态
+            const voiceOutputBtn = document.getElementById('voice-output-btn');
+            if (voiceOutputBtn) {
+                voiceOutputBtn.classList.toggle('active', voiceOutputEnabled);
+            }
+        }
+
+        // 应用头像显示设置
+        const avatarSection = document.querySelector('.avatar-section');
+        const mainContainer = document.querySelector('.main-container');
+        const avatarToggleBtn = document.getElementById('avatar-toggle-btn');
+        
+        if (avatarSection && mainContainer) {
+            avatarSection.classList.toggle('hidden', hideAvatar);
+            mainContainer.classList.toggle('avatar-hidden', hideAvatar);
+            
+            if (avatarToggleBtn) {
+                avatarToggleBtn.textContent = hideAvatar ? '👁️‍🗨️' : '👁️';
+                avatarToggleBtn.title = hideAvatar ? '显示头像' : '隐藏头像';
+            }
+        }
+
         // 显示成功消息
-        this.showNotification('DeepSeek API设置已保存', 'success');
+        this.showNotification('设置已保存', 'success');
 
         // 关闭设置模态框
         document.getElementById('settings-modal').style.display = 'none';
@@ -322,6 +623,43 @@ class UIManager {
         this.showNotification('聊天历史已清空', 'success');
     }
 
+    loadRoleManagerToModal() {
+        if (this.roleManager) {
+            // 更新统计信息
+            this.updateRoleStats();
+            // 加载并显示角色
+            this.roleManager.filterAndDisplayRoles();
+            // 显示当前角色信息
+            this.loadRoleToModal();
+        }
+    }
+
+    updateRoleStats() {
+        const roles = this.roleManager.getRoles();
+        const categories = this.roleManager.getCategories();
+        const favoriteCount = roles.filter(role => role.favorite).length;
+
+        const totalElement = document.getElementById('total-roles-count');
+        const favoriteElement = document.getElementById('favorite-roles-count');
+        const categoriesElement = document.getElementById('categories-count');
+
+        if (totalElement) totalElement.textContent = roles.length;
+        if (favoriteElement) favoriteElement.textContent = favoriteCount;
+        if (categoriesElement) categoriesElement.textContent = categories.length;
+    }
+
+    showCreateRoleModal() {
+        const emptyRole = {
+            name: '',
+            description: '',
+            personality: '',
+            prompt: '',
+            category: 'custom',
+            tags: []
+        };
+        this.showEditRoleModal(emptyRole, true);
+    }
+
     loadRoleToModal() {
         const currentRole = StorageManager.getCurrentRole();
         const roleDisplay = document.getElementById('current-role-display');
@@ -358,34 +696,47 @@ class UIManager {
         this.showEditRoleModal(currentRole);
     }
 
-    showEditRoleModal(roleData) {
+    showEditRoleModal(roleData, isNew = false) {
         const modal = document.createElement('div');
         modal.className = 'modal';
         modal.style.display = 'block';
         
+        const categories = this.roleManager.getCategories();
+        const categoryOptions = categories.map(cat => 
+            `<option value="${cat.id}" ${roleData.category === cat.id ? 'selected' : ''}>${cat.name}</option>`
+        ).join('');
+        
         modal.innerHTML = `
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2>编辑角色</h2>
+                <h2>${isNew ? '新建角色' : '编辑角色'}</h2>
                 <div class="edit-role-form">
                     <div class="setting-item">
                         <label for="edit-role-name">角色名称:</label>
-                        <input type="text" id="edit-role-name" value="${roleData.name}">
+                        <input type="text" id="edit-role-name" value="${roleData.name || ''}" placeholder="输入角色名称">
                     </div>
                     <div class="setting-item">
                         <label for="edit-role-description">角色描述:</label>
-                        <input type="text" id="edit-role-description" value="${roleData.description}">
+                        <input type="text" id="edit-role-description" value="${roleData.description || ''}" placeholder="简短描述角色特点">
                     </div>
                     <div class="setting-item">
                         <label for="edit-role-personality">性格特点:</label>
-                        <input type="text" id="edit-role-personality" value="${roleData.personality}">
+                        <input type="text" id="edit-role-personality" value="${roleData.personality || ''}" placeholder="描述角色性格">
+                    </div>
+                    <div class="setting-item">
+                        <label for="edit-role-category">角色分类:</label>
+                        <select id="edit-role-category">${categoryOptions}</select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="edit-role-tags">标签 (用逗号分隔):</label>
+                        <input type="text" id="edit-role-tags" value="${(roleData.tags || []).join(', ')}" placeholder="编程, 技术, 助手">
                     </div>
                     <div class="setting-item">
                         <label for="edit-role-prompt">系统提示词:</label>
-                        <textarea id="edit-role-prompt" rows="5">${roleData.prompt}</textarea>
+                        <textarea id="edit-role-prompt" rows="8" placeholder="详细描述角色的行为和回答风格">${roleData.prompt || ''}</textarea>
                     </div>
                     <div class="modal-actions">
-                        <button class="btn btn-primary" id="save-role-edit">保存</button>
+                        <button class="btn btn-primary" id="save-role-edit">${isNew ? '创建角色' : '保存修改'}</button>
                         <button class="btn btn-secondary" id="cancel-role-edit">取消</button>
                     </div>
                 </div>
@@ -408,17 +759,24 @@ class UIManager {
         
         saveBtn.addEventListener('click', () => {
             const updatedRole = {
+                id: roleData.id,
                 name: modal.querySelector('#edit-role-name').value.trim(),
                 description: modal.querySelector('#edit-role-description').value.trim(),
                 personality: modal.querySelector('#edit-role-personality').value.trim(),
-                prompt: modal.querySelector('#edit-role-prompt').value.trim()
+                prompt: modal.querySelector('#edit-role-prompt').value.trim(),
+                category: modal.querySelector('#edit-role-category').value,
+                tags: modal.querySelector('#edit-role-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
             };
 
             if (this.validateRoleData(updatedRole)) {
-                this.applyRole(updatedRole);
+                const savedRole = this.roleManager.saveRole(updatedRole);
                 closeModal();
-                this.loadRoleToModal();
-                this.showNotification('角色更新成功！', 'success');
+                this.loadRoleManagerToModal();
+                this.showNotification(`角色${isNew ? '创建' : '更新'}成功！`, 'success');
+                
+                if (window.avatarController) {
+                    window.avatarController.showExcitement();
+                }
             } else {
                 this.showNotification('请填写所有必需字段', 'error');
             }

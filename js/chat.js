@@ -187,6 +187,11 @@ class ChatManager {
             window.avatarController.reactToMessage(messageElement.message);
         }
 
+        // 触发语音输出
+        if (window.uiManager && window.uiManager.speakAIResponse) {
+            window.uiManager.speakAIResponse(fullContent);
+        }
+
         // 生成并显示快速回答按钮
         this.addQuickReplies(messageElement.element, fullContent);
 
