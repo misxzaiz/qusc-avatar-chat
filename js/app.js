@@ -31,12 +31,6 @@ class App {
     }
 
     initializeComponents() {
-        // 初始化头像控制器
-        const avatarElement = document.getElementById('avatar');
-        if (avatarElement) {
-            window.avatarController = new AvatarController(avatarElement);
-        }
-
         // 初始化UI管理器
         window.uiManager = new UIManager();
         window.uiManager.init();
@@ -87,10 +81,6 @@ class App {
                     timestamp: Date.now()
                 });
             }
-            
-            if (window.avatarController) {
-                window.avatarController.showHappiness();
-            }
         }, 500);
     }
 
@@ -118,11 +108,6 @@ class App {
                 `出现错误: ${errorMessage}`, 
                 'error'
             );
-        }
-
-        // 头像显示伤心表情
-        if (window.avatarController) {
-            window.avatarController.setEmotion('sad');
         }
     }
 
@@ -212,23 +197,12 @@ if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
     window.debug = {
         config: CONFIG,
         storage: StorageManager,
-        avatar: () => window.avatarController,
         chat: () => window.chatManager,
         role: () => window.roleGenerator,
         ui: () => window.uiManager,
         clearAll: () => {
             StorageManager.clear();
             location.reload();
-        },
-        testAvatar: () => {
-            const avatar = window.avatarController;
-            if (avatar) {
-                avatar.showHappiness();
-                setTimeout(() => avatar.showSadness(), 2000);
-                setTimeout(() => avatar.showExcitement(), 4000);
-                setTimeout(() => avatar.showSurprise(), 6000);
-                setTimeout(() => avatar.setEmotion('neutral'), 8000);
-            }
         }
     };
     

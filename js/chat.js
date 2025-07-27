@@ -53,12 +53,6 @@ class ChatManager {
 
         // 显示AI思考状态
         this.showTypingIndicator();
-        if (window.avatarController) {
-            window.avatarController.startThinking();
-        }
-        if (window.avatarController) {
-            window.avatarController.startThinking();
-        }
 
         try {
             await this.getAIResponse(content);
@@ -69,9 +63,6 @@ class ChatManager {
                 content: `错误: ${error.message}`,
                 timestamp: Date.now()
             });
-            if (window.avatarController) {
-                window.avatarController.setEmotion('sad');
-            }
         }
     }
 
@@ -120,9 +111,6 @@ class ChatManager {
                 role: 'system',
                 content: this.currentRole.prompt
             });
-            if (window.avatarController) {
-                window.avatarController.setEmotion('sad');
-            }
         }
 
         // 添加最近的对话历史（限制数量以避免超出token限制）
@@ -157,11 +145,6 @@ class ChatManager {
             
             // 自动滚动到底部
             this.scrollToBottom();
-            
-            // 头像说话动画
-            if (window.avatarController) {
-                window.avatarController.startTalking();
-            }
         }
     }
 
@@ -180,12 +163,6 @@ class ChatManager {
         // 保存到历史记录
         StorageManager.saveMessage(messageElement.message);
         this.conversationHistory.push(messageElement.message);
-
-        // 头像停止说话，显示高兴表情
-        if (window.avatarController) {
-            window.avatarController.stopTalking();
-            window.avatarController.reactToMessage(messageElement.message);
-        }
 
         // 触发语音输出
         if (window.uiManager && window.uiManager.speakAIResponse) {
@@ -236,9 +213,9 @@ class ChatManager {
             messageElement.classList.add('streaming');
         }
 
-        const avatar = document.createElement('div');
-        avatar.classList.add('message-avatar');
-        avatar.textContent = this.getMessageAvatar(message.type);
+        const messageIcon = document.createElement('div');
+        messageIcon.classList.add('message-avatar');
+        messageIcon.textContent = this.getMessageIcon(message.type);
 
         const content = document.createElement('div');
         content.classList.add('message-content');
@@ -248,7 +225,7 @@ class ChatManager {
         time.classList.add('message-time');
         time.textContent = this.formatTime(message.timestamp);
 
-        messageElement.appendChild(avatar);
+        messageElement.appendChild(messageIcon);
         messageElement.appendChild(content);
         content.appendChild(time);
 
@@ -261,11 +238,6 @@ class ChatManager {
             this.conversationHistory.push(message);
         }
 
-        // 头像反应
-        if (window.avatarController) {
-            window.avatarController.reactToMessage(message);
-        }
-
         return {
             element: messageElement,
             messageContent: content,
@@ -273,7 +245,7 @@ class ChatManager {
         };
     }
 
-    getMessageAvatar(type) {
+    getMessageIcon(type) {
         switch (type) {
             case 'user':
                 return '👤';
@@ -293,9 +265,9 @@ class ChatManager {
         typingElement.classList.add('message', 'assistant', 'typing-indicator-container');
         typingElement.id = 'typing-indicator';
 
-        const avatar = document.createElement('div');
-        avatar.classList.add('message-avatar');
-        avatar.textContent = '🤖';
+        const messageIcon = document.createElement('div');
+        messageIcon.classList.add('message-avatar');
+        messageIcon.textContent = '🤖';
 
         const typingIndicator = document.createElement('div');
         typingIndicator.classList.add('typing-indicator');
@@ -306,7 +278,7 @@ class ChatManager {
             typingIndicator.appendChild(dot);
         }
 
-        typingElement.appendChild(avatar);
+        typingElement.appendChild(messageIcon);
         typingElement.appendChild(typingIndicator);
         this.messagesContainer.appendChild(typingElement);
         this.scrollToBottom();

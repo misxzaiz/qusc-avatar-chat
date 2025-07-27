@@ -22,7 +22,6 @@ class UIManager {
         this.setupRoleManager();
         this.setupVoiceOutput();
         this.setupInputModes();
-        this.setupAvatarToggle();
         this.loadSettings();
     }
 
@@ -205,28 +204,6 @@ class UIManager {
         console.log('输入模式管理已简化');
     }
 
-    setupAvatarToggle() {
-        const avatarToggleBtn = document.getElementById('avatar-toggle-btn');
-        const avatarSection = document.querySelector('.avatar-section');
-        const mainContainer = document.querySelector('.main-container');
-        
-        if (avatarToggleBtn && avatarSection && mainContainer) {
-            avatarToggleBtn.addEventListener('click', () => {
-                const isHidden = avatarSection.classList.toggle('hidden');
-                mainContainer.classList.toggle('avatar-hidden', isHidden);
-                
-                // 更新按钮图标
-                avatarToggleBtn.textContent = isHidden ? '👁️‍🗨️' : '👁️';
-                avatarToggleBtn.title = isHidden ? '显示头像' : '隐藏头像';
-                
-                // 保存设置
-                StorageManager.saveSettings({ hideAvatar: isHidden });
-                
-                this.showNotification(isHidden ? '头像已隐藏' : '头像已显示', 'info');
-            });
-        }
-    }
-
     toggleVoiceRecording() {
         if (this.speechManager.getIsRecording()) {
             this.speechManager.stop();
@@ -245,11 +222,6 @@ class UIManager {
             this.voiceRecordBtn.classList.add('recording');
             this.voiceRecordBtn.textContent = '⏹️';
             this.voiceRecordBtn.title = '停止录音';
-        }
-        
-        // 头像显示倾听状态
-        if (window.avatarController) {
-            window.avatarController.startListening();
         }
     }
 
@@ -291,11 +263,6 @@ class UIManager {
                 window.chatManager.sendMessage();
             }, 300);
         }
-        
-        // 头像恢复中性状态
-        if (window.avatarController) {
-            window.avatarController.setEmotion('neutral');
-        }
     }
 
     onVoiceError(error) {
@@ -312,11 +279,6 @@ class UIManager {
         
         // 显示错误通知
         this.showNotification(error, 'error');
-        
-        // 头像显示难过表情
-        if (window.avatarController) {
-            window.avatarController.setEmotion('sad');
-        }
     }
 
     setupModals() {
@@ -412,22 +374,6 @@ class UIManager {
             window.chatManager.apiManager.updateSettings(settings);
         }
 
-        // 恢复头像显示状态
-        if (settings.hideAvatar) {
-            const avatarSection = document.querySelector('.avatar-section');
-            const mainContainer = document.querySelector('.main-container');
-            const avatarToggleBtn = document.getElementById('avatar-toggle-btn');
-            
-            if (avatarSection && mainContainer) {
-                avatarSection.classList.add('hidden');
-                mainContainer.classList.add('avatar-hidden');
-                
-                if (avatarToggleBtn) {
-                    avatarToggleBtn.textContent = '👁️‍🗨️';
-                    avatarToggleBtn.title = '显示头像';
-                }
-            }
-        }
     }
 
     loadSettingsToModal() {
@@ -445,11 +391,6 @@ class UIManager {
             preserveContextCheckbox.checked = settings.preserveContext || false;
         }
         
-        // 设置头像隐藏选项
-        const hideAvatarCheckbox = document.getElementById('hide-avatar');
-        if (hideAvatarCheckbox) {
-            hideAvatarCheckbox.checked = settings.hideAvatar || true;
-        }
         
         // 加载语音输出设置
         this.loadVoiceSettingsToModal();
@@ -602,12 +543,10 @@ class UIManager {
     async saveSettings() {
         const apiKeyInput = document.getElementById('api-key');
         const preserveContextCheckbox = document.getElementById('preserve-context');
-        const hideAvatarCheckbox = document.getElementById('hide-avatar');
         const voiceOutputEnabledCheckbox = document.getElementById('voice-output-enabled');
         
         const apiKey = apiKeyInput?.value.trim() || '';
         const preserveContext = preserveContextCheckbox?.checked || false;
-        const hideAvatar = hideAvatarCheckbox?.checked || false;
         const voiceOutputEnabled = voiceOutputEnabledCheckbox?.checked || false;
 
         if (!apiKey) {
@@ -618,7 +557,6 @@ class UIManager {
         const settings = {
             apiKey: apiKey,
             preserveContext: preserveContext,
-            hideAvatar: hideAvatar,
             voiceOutputEnabled: voiceOutputEnabled
         };
 
@@ -658,20 +596,6 @@ class UIManager {
         };
         StorageManager.set('voice_input_settings', voiceInputSettings);
 
-        // 应用头像显示设置
-        const avatarSection = document.querySelector('.avatar-section');
-        const mainContainer = document.querySelector('.main-container');
-        const avatarToggleBtn = document.getElementById('avatar-toggle-btn');
-        
-        if (avatarSection && mainContainer) {
-            avatarSection.classList.toggle('hidden', hideAvatar);
-            mainContainer.classList.toggle('avatar-hidden', hideAvatar);
-            
-            if (avatarToggleBtn) {
-                avatarToggleBtn.textContent = hideAvatar ? '👁️‍🗨️' : '👁️';
-                avatarToggleBtn.title = hideAvatar ? '显示头像' : '隐藏头像';
-            }
-        }
 
         // 显示成功消息
         this.showNotification('设置已保存', 'success');
@@ -884,9 +808,6 @@ class UIManager {
                 this.loadRoleManagerToModal();
                 this.showNotification(`角色${isNew ? '创建' : '更新'}成功！`, 'success');
                 
-                if (window.avatarController) {
-                    window.avatarController.showExcitement();
-                }
             } else {
                 this.showNotification('请填写所有必需字段', 'error');
             }
@@ -917,9 +838,6 @@ class UIManager {
             window.chatManager.setRole(roleData);
         }
 
-        if (window.avatarController) {
-            window.avatarController.showExcitement();
-        }
     }
 
     clearCurrentRole() {

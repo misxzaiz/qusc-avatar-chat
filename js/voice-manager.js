@@ -497,9 +497,6 @@ class InputModeManager {
 
         this.speechManager.setOnStart(() => {
             this.updateVoiceUI(true);
-            if (window.avatarController) {
-                window.avatarController.startListening();
-            }
         });
 
         this.speechManager.setOnResult((result) => {
@@ -526,10 +523,6 @@ class InputModeManager {
         this.speechManager.setOnEnd(() => {
             this.isRecording = false;
             this.updateVoiceUI(false);
-            
-            if (window.avatarController) {
-                window.avatarController.setEmotion('neutral');
-            }
         });
 
         this.speechManager.setOnError((error) => {
@@ -538,10 +531,6 @@ class InputModeManager {
             
             if (window.uiManager) {
                 window.uiManager.showNotification(error, 'error');
-            }
-            
-            if (window.avatarController) {
-                window.avatarController.setEmotion('sad');
             }
         });
     }

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI聊天助手</title>
     <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="styles/avatar.css">
     <link rel="stylesheet" href="styles/chat.css">
     <link rel="stylesheet" href="styles/role-manager.css">
     <link rel="stylesheet" href="styles/voice-modes.css">
@@ -16,7 +15,6 @@
         <div class="header">
             <h1>AI聊天助手</h1>
             <div class="header-controls">
-                <button id="avatar-toggle-btn" class="btn btn-icon" title="隐藏头像">👁️</button>
                 <button id="voice-output-btn" class="btn btn-icon voice-output-btn" title="语音输出">🔊</button>
                 <button id="role-btn" class="btn btn-icon">🤖</button>
                 <button id="history-btn" class="btn btn-icon">📚</button>
@@ -25,24 +23,6 @@
         </div>
 
         <div class="main-container">
-            <div class="avatar-section">
-                <div id="avatar" class="avatar">
-                    <div class="avatar-face">
-                        <div class="eyes">
-                            <div class="eye left-eye">
-                                <div class="pupil"></div>
-                            </div>
-                            <div class="eye right-eye">
-                                <div class="pupil"></div>
-                            </div>
-                        </div>
-                        <div class="mouth">
-                            <div class="mouth-shape"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="chat-section">
                 <div id="chat-container" class="chat-container">
                     <div id="messages" class="messages"></div>
@@ -288,21 +268,6 @@
                 </div>
             </div>
             
-            <!-- 界面设置 -->
-            <div class="setting-group">
-                <h3>界面设置</h3>
-                <div class="setting-item">
-                    <label for="hide-avatar">隐藏AI头像:</label>
-                    <div class="toggle-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="hide-avatar">
-                            <span class="toggle-slider"></span>
-                        </label>
-                        <span class="toggle-label">隐藏左侧的AI卡通头像</span>
-                    </div>
-                </div>
-            </div>
-            
             <button id="save-settings" class="btn btn-primary">保存设置</button>
         </div>
     </div>
@@ -319,7 +284,6 @@
     <script src="js/config.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/avatar.js"></script>
     <script src="js/speech.js"></script>
     <script src="js/voice-manager.js"></script>
     <script src="js/chat.js"></script>

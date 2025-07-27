@@ -11,22 +11,6 @@ const CONFIG = {
         SETTINGS: 'app_settings',
         CURRENT_ROLE: 'current_role'
     },
-    AVATAR: {
-        EMOTIONS: {
-            NEUTRAL: 'neutral',
-            HAPPY: 'happy',
-            SAD: 'sad',
-            TALKING: 'talking',
-            LISTENING: 'listening',
-            THINKING: 'thinking',
-            EXCITED: 'excited',
-            SURPRISED: 'surprised'
-        },
-        EMOTION_DURATION: 3000,
-        MOUSE_FOLLOW: true,
-        ANIMATION_ENABLED: true,
-        RANDOM_BLINK: true
-    },
     SPEECH: {
         RECOGNITION_LANG: 'zh-CN',
         CONTINUOUS: true,

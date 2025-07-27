@@ -72,19 +72,6 @@ body {
     position: relative;
 }
 
-.avatar-section {
-    flex: 0 0 300px;
-    background: #ffffff;
-    border-right: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    z-index: 10;
-}
 
 
 .chat-section {
@@ -244,15 +231,6 @@ body {
     margin-bottom: 0;
 }
 
-/* 头像隐藏时的布局调整 */
-.main-container.avatar-hidden .chat-section {
-    flex: 1;
-    margin-left: 0;
-}
-
-.main-container.avatar-hidden .avatar-section {
-    display: none;
-}
 
 /* 语音范围输入样式 */
 .voice-range-input {

@@ -38,10 +38,6 @@ class RoleGenerator {
         try {
             // 显示生成中的状态
             this.showStatus('正在生成角色...', 'info');
-            
-            if (window.avatarController) {
-                window.avatarController.startThinking();
-            }
 
             const roleData = await this.apiManager.generateRole(keywords);
             
@@ -61,19 +57,11 @@ class RoleGenerator {
                 window.uiManager.loadRoleToModal();
             }
             
-            if (window.avatarController) {
-                window.avatarController.showExcitement();
-            }
-
             this.showStatus(`角色 "${roleData.name}" 生成成功！`, 'success');
 
         } catch (error) {
             console.error('角色生成失败:', error);
             this.showStatus(`角色生成失败: ${error.message}`, 'error');
-            
-            if (window.avatarController) {
-                window.avatarController.setEmotion('sad');
-            }
         } finally {
             this.setLoading(false);
         }
@@ -180,18 +168,10 @@ class RoleGenerator {
             }
             
             this.showStatus('命令执行成功', 'success');
-            
-            if (window.avatarController) {
-                window.avatarController.showExcitement();
-            }
 
         } catch (error) {
             console.error('命令执行失败:', error);
             this.showStatus(`命令执行失败: ${error.message}`, 'error');
-            
-            if (window.avatarController) {
-                window.avatarController.setEmotion('sad');
-            }
         }
     }
 
