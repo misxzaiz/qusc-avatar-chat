@@ -761,8 +761,6 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 1.2rem;
-    width: 48px;
-    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
