@@ -9,6 +9,9 @@ class ChatManager {
         this.isTyping = false;
         this.currentStreamElement = null;
         
+        // 初始化悬浮表情窗口
+        this.floatingAvatar = null;
+        
         this.setupEventListeners();
         this.loadChatHistory();
     }
@@ -40,6 +43,11 @@ class ChatManager {
         // 清除所有现有的快速回答按钮
         this.clearAllQuickReplies();
 
+        // 通知悬浮表情窗口用户发送了消息
+        if (this.floatingAvatar) {
+            this.floatingAvatar.onUserMessage();
+        }
+
         // 添加用户消息
         this.addMessage({
             type: 'user',
@@ -63,6 +71,11 @@ class ChatManager {
                 content: `错误: ${error.message}`,
                 timestamp: Date.now()
             });
+            
+            // 通知悬浮表情窗口发生错误
+            if (this.floatingAvatar) {
+                this.floatingAvatar.onError();
+            }
         }
     }
 
@@ -164,6 +177,11 @@ class ChatManager {
         StorageManager.saveMessage(messageElement.message);
         this.conversationHistory.push(messageElement.message);
 
+        // 通知悬浮表情窗口AI回复完成
+        if (this.floatingAvatar) {
+            this.floatingAvatar.onAIResponse();
+        }
+
         // 触发语音输出
         if (window.uiManager && window.uiManager.speakAIResponse) {
             window.uiManager.speakAIResponse(fullContent);
@@ -196,6 +214,11 @@ class ChatManager {
         this.addRetryButton(messageElement.element, () => {
             this.retryLastMessage();
         });
+
+        // 通知悬浮表情窗口发生错误
+        if (this.floatingAvatar) {
+            this.floatingAvatar.onError();
+        }
 
         if (window.avatarController) {
             window.avatarController.stopTalking();
@@ -591,6 +614,34 @@ class ChatManager {
         quickRepliesElements.forEach(element => {
             element.remove();
         });
+    }
+
+    // 初始化悬浮表情窗口
+    initFloatingAvatar() {
+        if (!this.floatingAvatar) {
+            this.floatingAvatar = new window.FloatingAvatar();
+        }
+    }
+
+    // 切换悬浮表情窗口显示状态
+    toggleFloatingAvatar() {
+        if (!this.floatingAvatar) {
+            this.initFloatingAvatar();
+        } else {
+            if (this.floatingAvatar.container.style.display === 'none') {
+                this.floatingAvatar.show();
+            } else {
+                this.floatingAvatar.hide();
+            }
+        }
+    }
+
+    // 关闭悬浮表情窗口
+    closeFloatingAvatar() {
+        if (this.floatingAvatar) {
+            this.floatingAvatar.close();
+            this.floatingAvatar = null;
+        }
     }
 }
 

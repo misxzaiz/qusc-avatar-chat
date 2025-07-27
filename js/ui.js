@@ -289,6 +289,7 @@ class UIManager {
         const settingsBtn = document.getElementById('settings-btn');
         const historyBtn = document.getElementById('history-btn');
         const roleBtn = document.getElementById('role-btn');
+        const avatarBtn = document.getElementById('avatar-btn');
 
         // 打开设置模态框
         settingsBtn.addEventListener('click', () => {
@@ -307,6 +308,15 @@ class UIManager {
             this.openModal(roleModal);
             this.loadRoleManagerToModal();
         });
+
+        // 切换悬浮表情窗口
+        if (avatarBtn) {
+            avatarBtn.addEventListener('click', () => {
+                if (window.chatManager) {
+                    window.chatManager.toggleFloatingAvatar();
+                }
+            });
+        }
 
         // 关闭模态框
         document.querySelectorAll('.modal .close').forEach(closeBtn => {
