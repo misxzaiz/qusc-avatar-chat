@@ -364,6 +364,11 @@ class UIManager {
                 }
             });
         }
+
+        // 延迟初始化背景管理器，确保DOM完全加载
+        setTimeout(() => {
+            this.backgroundManager = new BackgroundManager();
+        }, 200);
     }
 
     setupHistory() {
@@ -482,6 +487,9 @@ class UIManager {
         
         // 加载语音输入设置
         this.loadVoiceInputSettings();
+
+        // 加载背景设置到模态框
+        this.loadBackgroundSettingsToModal();
     }
     
     loadVoiceInputSettings() {
@@ -499,6 +507,13 @@ class UIManager {
         const interruptToggle = document.getElementById('interrupt-toggle');
         if (interruptToggle) {
             interruptToggle.checked = inputSettings.interruptEnabled;
+        }
+    }
+
+    loadBackgroundSettingsToModal() {
+        // 确保背景管理器已初始化
+        if (this.backgroundManager) {
+            this.backgroundManager.updateUIFromSettings();
         }
     }
 

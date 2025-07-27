@@ -38,6 +38,8 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
+    z-index: 1;
 }
 
 .header {
@@ -52,6 +54,14 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    position: relative;
+}
+
+/* 有背景时，头部使用半透明效果 */
+body.has-chat-background .header {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(229, 231, 235, 0.6);
 }
 
 .header h1 {
@@ -383,6 +393,11 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 有背景时，模态框背景稍微暗一些 */
+body.has-chat-background .modal {
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 .modal-content {
@@ -780,4 +795,152 @@ body {
     50% {
         opacity: 0.7;
     }
+}
+
+/* 背景设置样式 */
+.background-upload-input {
+    padding: 0.5rem !important;
+    border: 2px dashed var(--border-color) !important;
+    border-radius: 8px !important;
+    background: var(--secondary-color) !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.background-upload-input:hover {
+    border-color: var(--dark-color) !important;
+    background: var(--pearl-color) !important;
+}
+
+.background-preview {
+    width: 100%;
+    height: 120px;
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--secondary-color);
+    position: relative;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.background-preview img,
+.background-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.preview-placeholder {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.chat-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.chat-background img,
+.chat-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.chat-background video {
+    object-fit: cover;
+}
+
+.chat-container.has-background {
+    position: relative;
+    background: transparent !important;
+}
+
+.chat-container.has-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.chat-container.has-background .messages {
+    position: relative;
+    z-index: 2;
+}
+
+.chat-container.has-background .messages .message {
+    position: relative;
+    z-index: 3;
+}
+
+/* 有背景时，消息使用半透明背景 */
+.chat-container.has-background .message.user {
+    background: rgba(241, 243, 244, 0.85) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+.chat-container.has-background .message.assistant {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+.chat-container.has-background .message.system {
+    background: rgba(255, 251, 235, 0.85) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+/* 有背景时，输入区域也使用半透明背景 */
+.chat-section:has(.chat-container.has-background) .input-section {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(15px);
+    border-top: 1px solid rgba(229, 231, 235, 0.6);
+}
+
+.chat-section:has(.chat-container.has-background) .input-section .input-field {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(229, 231, 235, 0.6);
+}
+
+.chat-section:has(.chat-container.has-background) .input-section .input-field:focus {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(55, 65, 81, 0.8);
+}
+
+/* 兼容性备选方案 - 使用body类 */
+body.has-chat-background .input-section {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(15px);
+    border-top: 1px solid rgba(229, 231, 235, 0.6);
+}
+
+body.has-chat-background .input-section .input-field {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(229, 231, 235, 0.6);
+}
+
+body.has-chat-background .input-section .input-field:focus {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(55, 65, 81, 0.8);
 }

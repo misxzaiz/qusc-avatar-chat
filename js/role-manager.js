@@ -220,7 +220,7 @@ class RoleManager {
         if (roles.length === 0) {
             container.innerHTML = `
                 <div class="no-roles">
-                    <div class="no-roles-icon">🤖</div>
+                    <div class="no-roles-icon">👤</div>
                     <h3>暂无角色</h3>
                     <p>创建您的第一个AI角色吧！</p>
                 </div>

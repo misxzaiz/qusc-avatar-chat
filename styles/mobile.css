@@ -349,3 +349,53 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 }
+
+/* 移动端聊天背景优化 */
+@media (max-width: 768px) {
+    .background-preview {
+        height: 80px;
+    }
+    
+    .chat-background {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100vh !important;
+        z-index: 0 !important;
+    }
+    
+    .chat-background img,
+    .chat-background video {
+        object-fit: cover;
+    }
+    
+    .chat-container.has-background::before {
+        background: rgba(255, 255, 255, 0.4) !important;
+    }
+    
+    .background-upload-input {
+        font-size: 0.85rem;
+        padding: 0.75rem !important;
+    }
+    
+    .setting-group h3 {
+        font-size: 1rem;
+    }
+    
+    .background-preview .preview-placeholder {
+        font-size: 0.8rem;
+    }
+    
+    /* 移动端头部透明效果 */
+    body.has-chat-background .header {
+        background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: blur(10px);
+    }
+    
+    /* 移动端输入区域透明效果 */
+    body.has-chat-background .input-section {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(10px);
+    }
+}

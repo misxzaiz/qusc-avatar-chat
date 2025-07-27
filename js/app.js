@@ -67,7 +67,7 @@ class App {
         let welcomeMessage = '👋 你好！我是你的AI聊天助手。';
         
         if (currentRole) {
-            welcomeMessage = `🤖 你好！我是 ${currentRole.name}，${currentRole.description}。有什么我可以帮助你的吗？`;
+            welcomeMessage = `👤 你好！我是 ${currentRole.name}，${currentRole.description}。有什么我可以帮助你的吗？`;
         } else {
             welcomeMessage += '你可以通过输入关键词来生成一个专属的AI角色，或者直接开始聊天。';
         }
@@ -200,12 +200,27 @@ if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
         chat: () => window.chatManager,
         role: () => window.roleGenerator,
         ui: () => window.uiManager,
+        background: () => window.uiManager?.backgroundManager,
         clearAll: () => {
             StorageManager.clear();
             location.reload();
+        },
+        testBackground: () => {
+            if (window.uiManager?.backgroundManager) {
+                window.uiManager.backgroundManager.setTestBackground();
+            } else {
+                console.log('Background manager not ready');
+            }
+        },
+        setImageBackground: (url) => {
+            if (window.uiManager?.backgroundManager) {
+                window.uiManager.backgroundManager.setBackgroundFromUrl(url, 'image');
+            }
         }
     };
     
     console.log('🐛 调试模式已启用');
     console.log('使用 window.debug 访问调试工具');
+    console.log('使用 debug.testBackground() 测试背景功能');
+    console.log('使用 debug.setImageBackground("图片URL") 设置网络图片背景');
 }

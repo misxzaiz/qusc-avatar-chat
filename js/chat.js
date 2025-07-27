@@ -273,7 +273,7 @@ class ChatManager {
             case 'user':
                 return '👤';
             case 'assistant':
-                return this.currentRole ? '🤖' : '🤖';
+                return this.currentRole ? '👤' : '👤';
             case 'system':
                 return '⚙️';
             case 'error':
@@ -290,7 +290,7 @@ class ChatManager {
 
         const messageIcon = document.createElement('div');
         messageIcon.classList.add('message-avatar');
-        messageIcon.textContent = '🤖';
+        messageIcon.textContent = '👤';
 
         const typingIndicator = document.createElement('div');
         typingIndicator.classList.add('typing-indicator');
