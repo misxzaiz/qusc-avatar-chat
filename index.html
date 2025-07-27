@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles/role-manager.css">
     <link rel="stylesheet" href="styles/voice-modes.css">
     <link rel="stylesheet" href="styles/floating-avatar.css">
+    <link rel="stylesheet" href="styles/help.css">
     <link rel="stylesheet" href="styles/mobile.css">
 </head>
 <body>
@@ -16,6 +17,7 @@
         <div class="header">
             <h1></h1>
             <div class="header-controls">
+                <button id="help-btn" class="btn btn-icon" title="使用说明">❓</button>
                 <button id="avatar-btn" class="btn btn-icon" title="表情助手">😊</button>
                 <button id="voice-output-btn" class="btn btn-icon voice-output-btn" title="语音输出">🔊</button>
                 <button id="role-btn" class="btn btn-icon">👤</button>
@@ -37,6 +39,164 @@
                             <button id="send-btn" class="btn btn-primary">发送</button>
                             <button id="voice-record-btn" class="btn voice-record-btn" title="点击录音">🎤</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="help-modal" class="modal">
+        <div class="modal-content help-modal">
+            <span class="close">&times;</span>
+            <h2>📖 使用说明</h2>
+            
+            <!-- Tab 导航 -->
+            <div class="help-tab-nav">
+                <button id="help-setup-tab" class="help-tab-btn active">🚀 快速开始</button>
+                <button id="help-features-tab" class="help-tab-btn">🌟 功能说明</button>
+                <button id="help-contact-tab" class="help-tab-btn">📞 联系我们</button>
+            </div>
+            
+            <!-- 快速开始页面 -->
+            <div id="help-setup-content" class="help-tab-content active">
+                <div class="help-section">
+                    <h3>🔑 DeepSeek API 配置</h3>
+                    <div class="help-steps">
+                        <div class="help-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>获取 API 密钥</h4>
+                                <p>访问 <a href="https://platform.deepseek.com/" style="color: blue" target="_blank">DeepSeek 官网</a> 注册账号</p>
+                            </div>
+                        </div>
+                        <div class="help-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>创建 API Key</h4>
+                                <p>登录后前往 API 管理页面，创建新的 API 密钥</p>
+                            </div>
+                        </div>
+                        <div class="help-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>配置密钥</h4>
+                                <p>点击右上角 <span class="btn-demo">⚙️</span> 设置按钮，在 "DeepSeek API Key" 中输入您的密钥</p>
+                            </div>
+                        </div>
+                        <div class="help-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>开始聊天</h4>
+                                <p>保存设置后即可开始与 AI 对话！</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="help-tip">
+                        <h4>💡 温馨提示</h4>
+                        <ul>
+                            <li>请妥善保管您的 API 密钥，不要泄露给他人</li>
+                            <li>首次使用建议先测试简单对话确认配置正确</li>
+                            <li>如遇到网络问题，请检查网络连接和防火墙设置</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 功能说明页面 -->
+            <div id="help-features-content" class="help-tab-content">
+                <div class="help-section">
+                    <h3>💬 智能对话</h3>
+                    <ul class="feature-list">
+                        <li><strong>实时对话</strong>：支持流式对话，实时显示 AI 回复</li>
+                        <li><strong>上下文理解</strong>：AI 会记住对话历史，提供连贯回复</li>
+                        <li><strong>多轮对话</strong>：支持长时间深度交流</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>🎤 语音功能</h3>
+                    <ul class="feature-list">
+                        <li><strong>语音输入</strong>：点击 <span class="btn-demo">🎤</span> 按钮进行语音识别输入</li>
+                        <li><strong>语音输出</strong>：AI 回复可转换为语音播放</li>
+                        <li><strong>语音设置</strong>：可调节语速、音调、音量等参数</li>
+                        <li><strong>语音打断</strong>：录音时自动停止当前播放</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>😊 悬浮表情助手</h3>
+                    <ul class="feature-list">
+                        <li><strong>启动助手</strong>：点击 <span class="btn-demo">😊</span> 按钮启动悬浮表情窗口</li>
+                        <li><strong>三种模式</strong>：
+                            <ul>
+                                <li>🎭 卡通表情：可爱的字符表情，支持多种情绪</li>
+                                <li>🖼️ 自定义图片：上传您喜欢的图片作为头像</li>
+                                <li>🎬 自定义视频：上传动态视频作为头像</li>
+                            </ul>
+                        </li>
+                        <li><strong>智能反应</strong>：根据对话状态自动变换表情</li>
+                        <li><strong>尺寸调节</strong>：点击 <span class="btn-demo">📏</span> 调整窗口大小</li>
+                        <li><strong>窗口操作</strong>：支持拖拽移动、最小化、关闭等操作</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>👤 角色管理</h3>
+                    <ul class="feature-list">
+                        <li><strong>角色切换</strong>：点击 <span class="btn-demo">👤</span> 管理和切换 AI 角色</li>
+                        <li><strong>预设角色</strong>：提供多种预设角色（助手、老师、程序员等）</li>
+                        <li><strong>自定义角色</strong>：创建专属的 AI 角色</li>
+                        <li><strong>快速生成</strong>：通过关键词快速生成角色</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>🎨 个性化设置</h3>
+                    <ul class="feature-list">
+                        <li><strong>聊天背景</strong>：支持纯色、图片、视频背景</li>
+                        <li><strong>透明度调节</strong>：调整消息框和背景透明度</li>
+                        <li><strong>历史记录</strong>：点击 <span class="btn-demo">📚</span> 查看聊天历史</li>
+                        <li><strong>移动端优化</strong>：完美支持手机和平板设备</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 联系我们页面 -->
+            <div id="help-contact-content" class="help-tab-content">
+                <div class="help-section">
+                    <h3>📞 联系方式</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <div class="contact-details">
+                                <h4>邮箱联系</h4>
+                                <p><b>qusc@foxmail.com</b></p>
+                                <p>如有任何问题、建议或反馈，欢迎发送邮件联系我们</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="help-tip">
+                        <h4>🛠️ 技术支持</h4>
+                        <p>我们提供以下技术支持：</p>
+                        <ul>
+                            <li>API 配置问题解答</li>
+                            <li>功能使用指导</li>
+                            <li>故障排除协助</li>
+                            <li>新功能建议收集</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-tip">
+                        <h4>⚡ 快速反馈</h4>
+                        <p>为了更好地帮助您，请在邮件中包含：</p>
+                        <ul>
+                            <li>详细的问题描述</li>
+                            <li>使用的浏览器类型和版本</li>
+                            <li>相关的错误信息（如有）</li>
+                            <li>期望的功能或改进建议</li>
+                        </ul>
                     </div>
                 </div>
             </div>

@@ -286,9 +286,11 @@ class UIManager {
         const settingsModal = document.getElementById('settings-modal');
         const historyModal = document.getElementById('history-modal');
         const roleModal = document.getElementById('role-modal');
+        const helpModal = document.getElementById('help-modal');
         const settingsBtn = document.getElementById('settings-btn');
         const historyBtn = document.getElementById('history-btn');
         const roleBtn = document.getElementById('role-btn');
+        const helpBtn = document.getElementById('help-btn');
         const avatarBtn = document.getElementById('avatar-btn');
 
         // 打开设置模态框
@@ -308,6 +310,14 @@ class UIManager {
             this.openModal(roleModal);
             this.loadRoleManagerToModal();
         });
+
+        // 打开帮助模态框
+        if (helpBtn) {
+            helpBtn.addEventListener('click', () => {
+                this.openModal(helpModal);
+                this.setupHelpModal();
+            });
+        }
 
         // 切换悬浮表情窗口
         if (avatarBtn) {
@@ -978,6 +988,28 @@ class UIManager {
         // 监听窗口大小变化
         window.addEventListener('resize', () => {
             this.handleResize();
+        });
+    }
+
+    setupHelpModal() {
+        // 设置帮助模态框的标签页切换
+        const helpTabs = document.querySelectorAll('.help-tab-btn');
+        const helpContents = document.querySelectorAll('.help-tab-content');
+
+        helpTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有活动状态
+                helpTabs.forEach(t => t.classList.remove('active'));
+                helpContents.forEach(c => c.classList.remove('active'));
+
+                // 添加当前标签的活动状态
+                tab.classList.add('active');
+                const targetContentId = tab.id.replace('tab', 'content');
+                const targetContent = document.getElementById(targetContentId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
         });
     }
 }
