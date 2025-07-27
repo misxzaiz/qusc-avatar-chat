@@ -49,7 +49,9 @@
 
                 <div class="input-section">
                     <div class="chat-input">
-                        <textarea id="message-input" placeholder="输入消息...或切换到语音模式" class="input-field"></textarea>
+                        <button id="input-mode-toggle" class="input-mode-toggle-btn" title="切换输入模式">💬</button>
+                        <button id="voice-record-btn" class="voice-record-btn hidden" title="点击录音">🎤</button>
+                        <textarea id="message-input" placeholder="输入消息..." class="input-field"></textarea>
                         <button id="send-btn" class="btn btn-primary">发送</button>
                     </div>
                     <div id="voice-status" class="voice-status hidden">
@@ -59,6 +61,16 @@
                             <div class="voice-wave"></div>
                         </div>
                         <span class="voice-text">正在听...</span>
+                    </div>
+                    <div class="voice-settings-panel hidden">
+                        <label class="voice-setting-toggle">
+                            <input type="checkbox" id="auto-send-toggle">
+                            <span>自动发送</span>
+                        </label>
+                        <label class="voice-setting-toggle">
+                            <input type="checkbox" id="interrupt-toggle" checked>
+                            <span>支持打断</span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -269,6 +281,7 @@
     <script src="js/avatar.js"></script>
     <script src="js/speech.js"></script>
     <script src="js/voice-manager.js"></script>
+    <script src="js/compact-input-manager.js"></script>
     <script src="js/chat.js"></script>
     <script src="js/role-generator.js"></script>
     <script src="js/role-manager.js"></script>

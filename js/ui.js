@@ -125,8 +125,8 @@ class UIManager {
     }
 
     setupInputModes() {
-        // 初始化输入模式管理器
-        this.inputModeManager = new InputModeManager();
+        // 初始化紧凑输入模式管理器
+        this.inputModeManager = new CompactInputModeManager();
     }
 
     setupAvatarToggle() {
