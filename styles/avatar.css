@@ -1,0 +1,384 @@
+.avatar {
+    width: 220px;
+    height: 220px;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 8px 24px rgba(139, 125, 107, 0.2));
+}
+
+.avatar-face {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #fffffe, #fefaf5);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 
+        inset 0 4px 8px rgba(139, 125, 107, 0.1),
+        0 12px 32px rgba(139, 125, 107, 0.15);
+    border: 6px solid rgba(255, 255, 255, 0.95);
+    
+    /* 添加奶白腮红 */
+    background-image: 
+        radial-gradient(circle at 25% 60%, rgba(230, 221, 212, 0.6) 12px, transparent 15px),
+        radial-gradient(circle at 75% 60%, rgba(230, 221, 212, 0.6) 12px, transparent 15px);
+}
+
+.eyes {
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 26px;
+}
+
+.eye {
+    width: 28px;
+    height: 28px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 
+        inset 0 2px 6px rgba(139, 125, 107, 0.08),
+        0 2px 8px rgba(139, 125, 107, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid rgba(230, 221, 212, 0.3);
+}
+
+.pupil {
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(145deg, #4a4a4a, #2d2d2d);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* 高光效果 */
+.pupil::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+}
+
+.mouth {
+    position: absolute;
+    bottom: 32%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 18px;
+}
+
+.mouth-shape {
+    width: 100%;
+    height: 100%;
+    border: 3px solid #8b7d6b;
+    border-top: none;
+    border-radius: 0 0 36px 36px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(to bottom, transparent 50%, rgba(139, 125, 107, 0.05) 100%);
+}
+
+/* 表情状态 */
+.avatar.talking .eye {
+    height: 32px;
+    animation: happy-eyes 0.6s ease-in-out infinite alternate;
+}
+
+.avatar.talking .mouth-shape {
+    height: 22px;
+    border-radius: 0 0 44px 44px;
+    animation: talking 0.6s ease-in-out infinite alternate;
+    border-color: #8b7d6b;
+}
+
+.avatar.listening .eye {
+    height: 24px;
+    transform: scale(1.1);
+}
+
+.avatar.listening .pupil {
+    animation: look-around 3s ease-in-out infinite;
+}
+
+.avatar.thinking .eye {
+    height: 26px;
+    animation: thinking-blink 2s ease-in-out infinite;
+}
+
+.avatar.thinking .pupil {
+    animation: thinking-move 2s ease-in-out infinite;
+}
+
+.avatar.happy .mouth-shape {
+    border-radius: 44px 44px 0 0;
+    border-top: 3px solid #8b7d6b;
+    border-bottom: none;
+    bottom: 8px;
+    background: linear-gradient(to top, transparent 50%, rgba(139, 125, 107, 0.1) 100%);
+    transform: scale(1.2);
+}
+
+.avatar.happy .eye {
+    transform: scale(1.1);
+    animation: sparkle 1.5s ease-in-out infinite;
+}
+
+.avatar.sad .mouth-shape {
+    border-radius: 0 0 18px 18px;
+    height: 12px;
+    border-color: #a8a094;
+    transform: scale(0.8);
+}
+
+.avatar.sad .eye {
+    height: 20px;
+    transform: translateY(2px);
+}
+
+.avatar.excited {
+    animation: bounce-excited 0.8s ease-in-out infinite;
+}
+
+.avatar.excited .eye {
+    animation: excited-sparkle 0.4s ease-in-out infinite alternate;
+}
+
+/* 动画 */
+@keyframes talking {
+    0% { height: 18px; transform: scaleX(1); }
+    100% { height: 26px; transform: scaleX(1.1); }
+}
+
+@keyframes happy-eyes {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+}
+
+@keyframes look-around {
+    0%, 100% { transform: translate(-50%, -50%); }
+    25% { transform: translate(-65%, -50%); }
+    75% { transform: translate(-35%, -50%); }
+}
+
+@keyframes thinking-blink {
+    0%, 90%, 100% { transform: translate(-50%, -50%) scaleY(1); }
+    95% { transform: translate(-50%, -50%) scaleY(0.2); }
+}
+
+@keyframes thinking-move {
+    0%, 100% { transform: translate(-50%, -50%); }
+    50% { transform: translate(-45%, -55%); }
+}
+
+@keyframes bounce-excited {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-12px) scale(1.02); }
+}
+
+@keyframes sparkle {
+    0%, 100% { box-shadow: 
+        inset 0 2px 6px rgba(139, 125, 107, 0.08),
+        0 2px 8px rgba(139, 125, 107, 0.1); }
+    50% { box-shadow: 
+        inset 0 2px 6px rgba(139, 125, 107, 0.15),
+        0 2px 8px rgba(139, 125, 107, 0.2),
+        0 0 12px rgba(139, 125, 107, 0.3); }
+}
+
+@keyframes excited-sparkle {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.1) rotate(2deg); }
+}
+
+/* 全屏头像 */
+.fullscreen-avatar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(20px);
+}
+
+.fullscreen-close {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.fullscreen-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1) rotate(90deg);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.avatar-large {
+    width: 450px;
+    height: 450px;
+    position: relative;
+    filter: drop-shadow(0 20px 60px rgba(139, 125, 107, 0.2));
+}
+
+.avatar-face-large {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #fffffe, #fefaf5);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 
+        inset 0 8px 16px rgba(139, 125, 107, 0.1),
+        0 20px 60px rgba(139, 125, 107, 0.2);
+    border: 12px solid rgba(255, 255, 255, 0.95);
+    
+    /* 全屏版奶白腮红 */
+    background-image: 
+        radial-gradient(circle at 25% 60%, rgba(230, 221, 212, 0.8) 24px, transparent 30px),
+        radial-gradient(circle at 75% 60%, rgba(230, 221, 212, 0.8) 24px, transparent 30px);
+}
+
+.eyes-large {
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 50px;
+}
+
+.eye-large {
+    width: 56px;
+    height: 56px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 
+        inset 0 4px 12px rgba(139, 125, 107, 0.08),
+        0 4px 16px rgba(139, 125, 107, 0.15);
+    border: 4px solid rgba(230, 221, 212, 0.4);
+}
+
+.pupil-large {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(145deg, #4a4a4a, #2d2d2d);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.pupil-large::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.9;
+}
+
+.mouth-large {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 72px;
+    height: 36px;
+}
+
+.mouth-shape-large {
+    width: 100%;
+    height: 100%;
+    border: 6px solid #8b7d6b;
+    border-top: none;
+    border-radius: 0 0 72px 72px;
+    background: linear-gradient(to bottom, transparent 50%, rgba(139, 125, 107, 0.05) 100%);
+}
+
+/* 呼吸效果 */
+.avatar-large {
+    animation: gentle-breathing 5s ease-in-out infinite;
+}
+
+@keyframes gentle-breathing {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+}
+
+@keyframes breathing {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* 眼睛跟随鼠标 */
+.avatar.following-mouse .pupil,
+.avatar-large .pupil-large {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 情绪颜色变化 - 奶白风格 */
+.avatar.emotion-happy .avatar-face {
+    background: linear-gradient(145deg, #f8fff8, #f0f8f0);
+    background-image: 
+        radial-gradient(circle at 25% 60%, rgba(200, 230, 200, 0.4) 12px, transparent 15px),
+        radial-gradient(circle at 75% 60%, rgba(200, 230, 200, 0.4) 12px, transparent 15px);
+}
+
+.avatar.emotion-sad .avatar-face {
+    background: linear-gradient(145deg, #f8f8ff, #f0f4f8);
+    background-image: 
+        radial-gradient(circle at 25% 60%, rgba(200, 220, 240, 0.3) 12px, transparent 15px),
+        radial-gradient(circle at 75% 60%, rgba(200, 220, 240, 0.3) 12px, transparent 15px);
+}
+
+.avatar.emotion-surprised .avatar-face {
+    background: linear-gradient(145deg, #fffaf0, #fff5e6);
+    background-image: 
+        radial-gradient(circle at 25% 60%, rgba(240, 220, 180, 0.4) 12px, transparent 15px),
+        radial-gradient(circle at 75% 60%, rgba(240, 220, 180, 0.4) 12px, transparent 15px);
+}
+
+.avatar.emotion-neutral .avatar-face {
+    background: linear-gradient(145deg, #fffffe, #fefaf5);
+    background-image: 
+        radial-gradient(circle at 25% 60%, rgba(230, 221, 212, 0.6) 12px, transparent 15px),
+        radial-gradient(circle at 75% 60%, rgba(230, 221, 212, 0.6) 12px, transparent 15px);
+}

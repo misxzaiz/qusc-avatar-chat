@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI聊天助手</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/avatar.css">
+    <link rel="stylesheet" href="styles/chat.css">
+    <link rel="stylesheet" href="styles/mobile.css">
+</head>
+<body>
+    <div id="app" class="app">
+        <div class="header">
+            <h1>AI聊天助手</h1>
+            <div class="header-controls">
+                <button id="fullscreen-btn" class="btn btn-icon">🔍</button>
+                <button id="role-btn" class="btn btn-icon">🤖</button>
+                <button id="history-btn" class="btn btn-icon">📚</button>
+                <button id="settings-btn" class="btn btn-icon">⚙️</button>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="avatar-section">
+                <div id="avatar" class="avatar">
+                    <div class="avatar-face">
+                        <div class="eyes">
+                            <div class="eye left-eye">
+                                <div class="pupil"></div>
+                            </div>
+                            <div class="eye right-eye">
+                                <div class="pupil"></div>
+                            </div>
+                        </div>
+                        <div class="mouth">
+                            <div class="mouth-shape"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-section">
+                <div id="chat-container" class="chat-container">
+                    <div id="messages" class="messages"></div>
+                </div>
+
+                <div class="input-section">
+                    <div class="chat-input">
+                        <textarea id="message-input" placeholder="输入消息..." class="input-field"></textarea>
+                        <button id="send-btn" class="btn btn-primary">发送</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="role-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>🤖 角色生成</h2>
+            <div class="role-generator">
+                <div class="setting-item">
+                    <label for="role-keywords">输入关键词生成角色:</label>
+                    <input type="text" id="role-keywords" placeholder="例如: 猫咪、程序员、老师..." class="input-field">
+                </div>
+                <button id="generate-role-btn" class="btn btn-primary">生成角色</button>
+                <div id="role-generation-status" class="role-status"></div>
+            </div>
+            
+            <div id="current-role-display" class="current-role-display">
+                <!-- 当前角色信息会在这里显示 -->
+            </div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>设置</h2>
+            <div class="setting-item">
+                <label for="api-key">DeepSeek API Key:</label>
+                <input type="password" id="api-key" placeholder="请输入API Key">
+            </div>
+            <div class="setting-item">
+                <label for="api-url">API URL:</label>
+                <input type="text" id="api-url" value="https://api.deepseek.com/v1/chat/completions" placeholder="API地址">
+            </div>
+            <button id="save-settings" class="btn btn-primary">保存设置</button>
+        </div>
+    </div>
+
+    <div id="history-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>聊天历史</h2>
+            <div id="history-list" class="history-list"></div>
+            <button id="clear-history" class="btn btn-danger">清空历史</button>
+        </div>
+    </div>
+
+    <!-- 全屏模式 -->
+    <div id="fullscreen-avatar" class="fullscreen-avatar hidden">
+        <div class="fullscreen-close">×</div>
+        <div class="avatar-large">
+            <div class="avatar-face-large">
+                <div class="eyes-large">
+                    <div class="eye-large left-eye-large">
+                        <div class="pupil-large"></div>
+                    </div>
+                    <div class="eye-large right-eye-large">
+                        <div class="pupil-large"></div>
+                    </div>
+                </div>
+                <div class="mouth-large">
+                    <div class="mouth-shape-large"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/avatar.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/role-generator.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
