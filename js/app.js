@@ -213,7 +213,8 @@ if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
                 avatar.showHappiness();
                 setTimeout(() => avatar.showSadness(), 2000);
                 setTimeout(() => avatar.showExcitement(), 4000);
-                setTimeout(() => avatar.setEmotion('neutral'), 6000);
+                setTimeout(() => avatar.showSurprise(), 6000);
+                setTimeout(() => avatar.setEmotion('neutral'), 8000);
             }
         }
     };

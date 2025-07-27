@@ -56,6 +56,9 @@ class ChatManager {
         if (window.avatarController) {
             window.avatarController.startThinking();
         }
+        if (window.avatarController) {
+            window.avatarController.startThinking();
+        }
 
         try {
             await this.getAIResponse(content);
@@ -117,6 +120,9 @@ class ChatManager {
                 role: 'system',
                 content: this.currentRole.prompt
             });
+            if (window.avatarController) {
+                window.avatarController.setEmotion('sad');
+            }
         }
 
         // 添加最近的对话历史（限制数量以避免超出token限制）
@@ -581,6 +587,9 @@ class ChatManager {
 
         // 显示AI思考状态
         this.showTypingIndicator();
+        if (window.avatarController) {
+            window.avatarController.startThinking();
+        }
         if (window.avatarController) {
             window.avatarController.startThinking();
         }

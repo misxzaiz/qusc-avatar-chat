@@ -19,9 +19,13 @@ const CONFIG = {
             TALKING: 'talking',
             LISTENING: 'listening',
             THINKING: 'thinking',
-            EXCITED: 'excited'
+            EXCITED: 'excited',
+            SURPRISED: 'surprised'
         },
-        EMOTION_DURATION: 3000
+        EMOTION_DURATION: 3000,
+        MOUSE_FOLLOW: true,
+        ANIMATION_ENABLED: true,
+        RANDOM_BLINK: true
     },
     ROLE_GENERATION: {
         SYSTEM_PROMPT: `你是一个角色生成助手。根据用户提供的关键词，生成一个有趣的AI角色人设。
