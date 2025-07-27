@@ -11,7 +11,10 @@ class APIManager {
 
     async sendMessage(messages, options = {}) {
         if (!this.settings.apiKey) {
-            throw new Error('请先设置DeepSeek API密钥');
+            this.settings = StorageManager.getSettings();
+            if (!this.settings.apiKey) {
+                throw new Error('请先设置DeepSeek API密钥');
+            }
         }
 
         const {
@@ -118,6 +121,9 @@ class APIManager {
     }
 
     async generateRole(keywords) {
+        // 确保使用最新的设置
+        this.settings = StorageManager.getSettings();
+        
         const messages = [
             {
                 role: 'system',
