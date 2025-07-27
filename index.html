@@ -49,30 +49,11 @@
 
                 <div class="input-section">
                     <div class="chat-input">
-                        <button id="input-mode-toggle" class="input-mode-toggle-btn" title="切换输入模式">💬</button>
                         <div>
                             <textarea id="message-input" placeholder="输入消息..." class="input-field"></textarea>
                             <button id="send-btn" class="btn btn-primary">发送</button>
-                            <button id="voice-record-btn" class="voice-record-btn hidden" title="点击录音">🎤</button>
+                            <button id="voice-record-btn" class="voice-record-btn" title="点击录音">🎤</button>
                         </div>
-                    </div>
-                    <div id="voice-status" class="voice-status hidden">
-                        <div class="voice-indicator">
-                            <div class="voice-wave"></div>
-                            <div class="voice-wave"></div>
-                            <div class="voice-wave"></div>
-                        </div>
-                        <span class="voice-text">正在听...</span>
-                    </div>
-                    <div class="voice-settings-panel hidden">
-                        <label class="voice-setting-toggle">
-                            <input type="checkbox" id="auto-send-toggle">
-                            <span>自动发送</span>
-                        </label>
-                        <label class="voice-setting-toggle">
-                            <input type="checkbox" id="interrupt-toggle" checked>
-                            <span>支持打断</span>
-                        </label>
                     </div>
                 </div>
             </div>
@@ -236,9 +217,29 @@
                     </div>
                 </div>
                 <div class="setting-item">
+                    <label for="voice-provider">语音提供商:</label>
+                    <select id="voice-provider" class="voice-select">
+                        <option value="browser">浏览器内置</option>
+                        <option value="iflytek">讯飞语音合成</option>
+                    </select>
+                </div>
+                <div class="setting-item" id="browser-voice-settings">
                     <label for="voice-select">选择语音:</label>
                     <select id="voice-select" class="voice-select">
                         <option value="">默认语音</option>
+                    </select>
+                </div>
+                <div class="setting-item" id="iflytek-voice-settings" style="display: none;">
+                    <label for="iflytek-voice-select">讯飞发音人:</label>
+                    <select id="iflytek-voice-select" class="voice-select">
+                        <option value="xiaoyan">小燕 (亲和女声)</option>
+                        <option value="xiaoyu">小宇 (亲和男声)</option>
+                        <option value="xiaoqian">小倩 (温暖女声)</option>
+                        <option value="xiaofeng">小峰 (温暖男声)</option>
+                        <option value="aisxping">艾斯萍 (温柔女声)</option>
+                        <option value="aisjinger">艾斯婧儿 (温暖女声)</option>
+                        <option value="aisjiuxu">艾斯九旭 (成熟男声)</option>
+                        <option value="xiaomeng">小萌 (萌萌女声)</option>
                     </select>
                 </div>
                 <div class="setting-item">
@@ -258,6 +259,31 @@
                 </div>
                 <div class="setting-item">
                     <button id="voice-test-btn" class="voice-test-btn">测试语音</button>
+                </div>
+            </div>
+            
+            <!-- 语音输入设置 -->
+            <div class="setting-group">
+                <h3>语音输入设置</h3>
+                <div class="setting-item">
+                    <label for="auto-send-toggle">识别后自动发送:</label>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="auto-send-toggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">语音识别完成后自动发送消息</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="interrupt-toggle">支持语音打断:</label>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="interrupt-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">开始录音时停止当前语音播放</span>
+                    </div>
                 </div>
             </div>
             
@@ -295,7 +321,6 @@
     <script src="js/avatar.js"></script>
     <script src="js/speech.js"></script>
     <script src="js/voice-manager.js"></script>
-    <script src="js/compact-input-manager.js"></script>
     <script src="js/chat.js"></script>
     <script src="js/role-generator.js"></script>
     <script src="js/role-manager.js"></script>

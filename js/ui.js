@@ -28,13 +28,8 @@ class UIManager {
 
     setupVoiceInput() {
         this.voiceButton = document.getElementById('voice-btn');
-        this.voiceStatus = document.getElementById('voice-status');
+        this.voiceRecordBtn = document.getElementById('voice-record-btn');
         this.messageInput = document.getElementById('message-input');
-
-        // 如果语音按钮不存在，创建语音管理器但不设置点击事件
-        if (!this.voiceButton) {
-            console.log('语音按钮未找到，使用新的语音模式管理');
-        }
 
         // 初始化语音管理器
         this.speechManager = new SpeechManager();
@@ -44,6 +39,9 @@ class UIManager {
             console.warn('当前浏览器不支持语音识别');
             if (this.voiceButton) {
                 this.voiceButton.style.display = 'none';
+            }
+            if (this.voiceRecordBtn) {
+                this.voiceRecordBtn.style.display = 'none';
             }
             return;
         }
@@ -65,7 +63,14 @@ class UIManager {
             this.onVoiceError(error);
         });
 
-        // 只有当语音按钮存在时才设置点击事件
+        // 设置语音录音按钮点击事件
+        if (this.voiceRecordBtn) {
+            this.voiceRecordBtn.addEventListener('click', () => {
+                this.toggleVoiceRecording();
+            });
+        }
+
+        // 兼容旧的语音按钮
         if (this.voiceButton) {
             this.voiceButton.addEventListener('click', () => {
                 this.toggleVoiceRecording();
@@ -196,8 +201,8 @@ class UIManager {
     }
 
     setupInputModes() {
-        // 初始化紧凑输入模式管理器
-        this.inputModeManager = new CompactInputModeManager();
+        // 紧凑输入模式管理器已移除，保留此方法以防止错误
+        console.log('输入模式管理已简化');
     }
 
     setupAvatarToggle() {
@@ -231,19 +236,20 @@ class UIManager {
     }
 
     onVoiceStart() {
-        this.voiceButton.classList.add('recording');
-        this.voiceButton.textContent = '🔴';
-        this.voiceStatus.classList.remove('hidden');
+        // 更新所有语音按钮状态
+        if (this.voiceButton) {
+            this.voiceButton.classList.add('recording');
+            this.voiceButton.textContent = '🔴';
+        }
+        if (this.voiceRecordBtn) {
+            this.voiceRecordBtn.classList.add('recording');
+            this.voiceRecordBtn.textContent = '⏹️';
+            this.voiceRecordBtn.title = '停止录音';
+        }
         
         // 头像显示倾听状态
         if (window.avatarController) {
             window.avatarController.startListening();
-        }
-        
-        // 更新状态文本
-        const voiceText = this.voiceStatus.querySelector('.voice-text');
-        if (voiceText) {
-            voiceText.textContent = '正在听...';
         }
     }
 
@@ -252,32 +258,34 @@ class UIManager {
         const displayText = result.final + (result.interim ? ` ${result.interim}` : '');
         this.messageInput.value = displayText;
         
-        // 更新状态文本
-        const voiceText = this.voiceStatus.querySelector('.voice-text');
-        if (voiceText) {
-            if (result.interim) {
-                voiceText.textContent = `识别中: ${result.interim}`;
-            } else if (result.final) {
-                voiceText.textContent = '识别完成';
-            }
-        }
-        
-        // 如果有最终结果，准备发送
+        // 如果有最终结果，检查是否自动发送
         if (result.isFinal && result.final.trim()) {
-            setTimeout(() => {
-                this.speechManager.stop();
-            }, 500);
+            const autoSend = document.getElementById('auto-send-toggle')?.checked || false;
+            if (autoSend) {
+                setTimeout(() => {
+                    this.speechManager.stop();
+                }, 500);
+            }
         }
     }
 
     onVoiceEnd() {
-        this.voiceButton.classList.remove('recording');
-        this.voiceButton.textContent = '🎤';
-        this.voiceStatus.classList.add('hidden');
+        // 恢复所有语音按钮状态
+        if (this.voiceButton) {
+            this.voiceButton.classList.remove('recording');
+            this.voiceButton.textContent = '🎤';
+        }
+        if (this.voiceRecordBtn) {
+            this.voiceRecordBtn.classList.remove('recording');
+            this.voiceRecordBtn.textContent = '🎤';
+            this.voiceRecordBtn.title = '点击录音';
+        }
         
-        // 如果输入框有内容，自动发送
+        // 如果输入框有内容且启用了自动发送
         const inputValue = this.messageInput.value.trim();
-        if (inputValue && window.chatManager) {
+        const autoSend = document.getElementById('auto-send-toggle')?.checked || false;
+        
+        if (inputValue && autoSend && window.chatManager) {
             // 延迟一点让用户看到识别结果
             setTimeout(() => {
                 window.chatManager.sendMessage();
@@ -291,9 +299,16 @@ class UIManager {
     }
 
     onVoiceError(error) {
-        this.voiceButton.classList.remove('recording');
-        this.voiceButton.textContent = '🎤';
-        this.voiceStatus.classList.add('hidden');
+        // 恢复所有语音按钮状态
+        if (this.voiceButton) {
+            this.voiceButton.classList.remove('recording');
+            this.voiceButton.textContent = '🎤';
+        }
+        if (this.voiceRecordBtn) {
+            this.voiceRecordBtn.classList.remove('recording');
+            this.voiceRecordBtn.textContent = '🎤';
+            this.voiceRecordBtn.title = '点击录音';
+        }
         
         // 显示错误通知
         this.showNotification(error, 'error');
@@ -498,6 +513,27 @@ class UIManager {
                 this.testVoiceOutput();
             });
         }
+        
+        // 加载语音输入设置
+        this.loadVoiceInputSettings();
+    }
+    
+    loadVoiceInputSettings() {
+        // 加载语音输入设置
+        const inputSettings = StorageManager.get('voice_input_settings', {
+            autoSend: false,
+            interruptEnabled: true
+        });
+        
+        const autoSendToggle = document.getElementById('auto-send-toggle');
+        if (autoSendToggle) {
+            autoSendToggle.checked = inputSettings.autoSend;
+        }
+        
+        const interruptToggle = document.getElementById('interrupt-toggle');
+        if (interruptToggle) {
+            interruptToggle.checked = inputSettings.interruptEnabled;
+        }
     }
 
     toggleVoiceOutput() {
@@ -539,23 +575,6 @@ class UIManager {
         const volume = parseFloat(document.getElementById('voice-volume')?.value || 1.0);
         
         this.voiceOutputManager.speak(testText, { rate, pitch, volume });
-    }
-
-    onInputModeChanged(mode) {
-        // 输入模式切换时的回调
-        console.log('输入模式已切换到:', mode);
-        
-        if (mode === 'voice') {
-            // 切换到语音模式时的处理
-            if (window.avatarController) {
-                window.avatarController.setEmotion('listening');
-            }
-        } else {
-            // 切换到文字模式时的处理
-            if (window.avatarController) {
-                window.avatarController.setEmotion('neutral');
-            }
-        }
     }
 
     // 为聊天管理器提供语音输出接口
@@ -600,7 +619,9 @@ class UIManager {
         if (this.voiceOutputManager) {
             const voiceSettings = {
                 enabled: voiceOutputEnabled,
+                provider: document.getElementById('voice-provider')?.value || 'browser',
                 voice: document.getElementById('voice-select')?.value || '',
+                iflytekVoice: document.getElementById('iflytek-voice-select')?.value || 'xiaoyan',
                 rate: parseFloat(document.getElementById('voice-rate')?.value || 1.0),
                 pitch: parseFloat(document.getElementById('voice-pitch')?.value || 1.0),
                 volume: parseFloat(document.getElementById('voice-volume')?.value || 1.0)
@@ -614,6 +635,13 @@ class UIManager {
                 voiceOutputBtn.classList.toggle('active', voiceOutputEnabled);
             }
         }
+
+        // 保存语音输入设置
+        const voiceInputSettings = {
+            autoSend: document.getElementById('auto-send-toggle')?.checked || false,
+            interruptEnabled: document.getElementById('interrupt-toggle')?.checked || true
+        };
+        StorageManager.set('voice_input_settings', voiceInputSettings);
 
         // 应用头像显示设置
         const avatarSection = document.querySelector('.avatar-section');
