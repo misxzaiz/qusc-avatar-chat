@@ -119,11 +119,13 @@ class UIManager {
         
         document.getElementById('api-key').value = settings.apiKey || '';
         document.getElementById('api-url').value = settings.apiUrl || CONFIG.API.DEEPSEEK_URL;
+        document.getElementById('preserve-context').checked = settings.preserveContext || false;
     }
 
     async saveSettings() {
         const apiKey = document.getElementById('api-key').value.trim();
         const apiUrl = document.getElementById('api-url').value.trim();
+        const preserveContext = document.getElementById('preserve-context').checked;
 
         if (!apiKey) {
             this.showNotification('请输入API密钥', 'error');
@@ -146,7 +148,8 @@ class UIManager {
         const settings = {
             apiKey: apiKey,
             apiUrl: apiUrl,
-            model: CONFIG.API.DEFAULT_MODEL
+            model: CONFIG.API.DEFAULT_MODEL,
+            preserveContext: preserveContext
         };
 
         // 保存设置

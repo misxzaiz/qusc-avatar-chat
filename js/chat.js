@@ -331,6 +331,10 @@ class ChatManager {
         this.currentRole = role;
         StorageManager.saveCurrentRole(role);
         
+        // 检查是否需要保留上下文
+        const settings = StorageManager.getSettings();
+        const shouldPreserveContext = settings.preserveContext;
+        
         // 显示角色切换消息
         if (role) {
             this.addMessage({
@@ -338,6 +342,20 @@ class ChatManager {
                 content: `已切换到角色: ${role.name} - ${role.description}`,
                 timestamp: Date.now()
             });
+            
+            // 如果不保留上下文，清空对话历史
+            if (!shouldPreserveContext) {
+                this.addMessage({
+                    type: 'system',
+                    content: '已清空之前的对话上下文，开始新的对话',
+                    timestamp: Date.now()
+                });
+                
+                // 清空内存中的对话历史，但保留系统消息
+                setTimeout(() => {
+                    this.conversationHistory = this.conversationHistory.filter(msg => msg.type === 'system');
+                }, 100);
+            }
         }
     }
 

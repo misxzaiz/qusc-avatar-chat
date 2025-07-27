@@ -84,12 +84,36 @@ class RoleGenerator {
     }
 
     applyRole(roleData) {
+        // 获取临时上下文设置
+        const clearContextCheckbox = document.getElementById('clear-context-on-role-change');
+        const shouldClearContext = clearContextCheckbox && clearContextCheckbox.checked;
+        
+        // 如果勾选了临时清空选项，临时修改设置
+        let originalPreserveSetting = null;
+        if (shouldClearContext) {
+            const settings = StorageManager.getSettings();
+            originalPreserveSetting = settings.preserveContext;
+            StorageManager.saveSettings({ preserveContext: false });
+        }
+        
         // 保存角色数据
         StorageManager.saveCurrentRole(roleData);
         
         // 更新聊天管理器的角色
         if (window.chatManager) {
             window.chatManager.setRole(roleData);
+        }
+        
+        // 恢复原始设置
+        if (originalPreserveSetting !== null) {
+            setTimeout(() => {
+                StorageManager.saveSettings({ preserveContext: originalPreserveSetting });
+            }, 200);
+        }
+        
+        // 重置复选框
+        if (clearContextCheckbox) {
+            clearContextCheckbox.checked = false;
         }
     }
 

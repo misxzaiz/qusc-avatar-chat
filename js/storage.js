@@ -72,7 +72,8 @@ class StorageManager {
         return this.get(CONFIG.STORAGE.SETTINGS, {
             apiKey: '',
             apiUrl: CONFIG.API.DEEPSEEK_URL,
-            model: CONFIG.API.DEFAULT_MODEL
+            model: CONFIG.API.DEFAULT_MODEL,
+            preserveContext: false
         });
     }
 

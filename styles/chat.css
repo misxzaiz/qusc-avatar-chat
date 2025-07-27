@@ -1,5 +1,5 @@
 .chat-container {
-    background: linear-gradient(to bottom, var(--milk-color) 0%, var(--background-color) 100%);
+    background: #ffffff;
     position: relative;
 }
 
@@ -25,20 +25,20 @@
 }
 
 .message.user .message-avatar {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    border: 3px solid rgba(255, 255, 255, 0.9);
+    background: var(--primary-color);
+    border: 2px solid #ffffff;
     color: var(--text-color);
 }
 
 .message.assistant .message-avatar {
-    background: linear-gradient(135deg, var(--success-color), #d8e8d8);
-    border: 3px solid rgba(255, 255, 255, 0.9);
+    background: var(--success-color);
+    border: 2px solid #ffffff;
     color: var(--text-color);
 }
 
 .message.system .message-avatar {
-    background: linear-gradient(135deg, var(--warning-color), var(--ivory-color));
-    border: 3px solid rgba(255, 255, 255, 0.9);
+    background: var(--warning-color);
+    border: 2px solid #ffffff;
     color: var(--text-color);
 }
 
@@ -55,24 +55,24 @@
 }
 
 .message-content code {
-    background: rgba(139, 125, 107, 0.08);
+    background: rgba(0, 0, 0, 0.05);
     padding: 0.3rem 0.6rem;
     border-radius: 12px;
     font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
     font-size: 0.9rem;
-    border: 1px solid rgba(139, 125, 107, 0.15);
+    border: 1px solid var(--border-color);
     color: var(--text-color);
 }
 
 .message-content pre {
-    background: linear-gradient(135deg, var(--cream-color), var(--milk-color));
+    background: var(--secondary-color);
     padding: 1.5rem;
     border-radius: 16px;
     overflow-x: auto;
     margin: 1rem 0;
     border-left: 4px solid var(--dark-color);
     box-shadow: var(--soft-shadow);
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
 }
 
 .message-content pre code {
@@ -99,7 +99,7 @@
 }
 
 .role-indicator {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: var(--secondary-color);
     color: var(--text-color);
     padding: 0.75rem 1.5rem;
     border-radius: 25px;
@@ -107,8 +107,7 @@
     margin-bottom: 1.5rem;
     display: inline-block;
     box-shadow: var(--soft-shadow);
-    border: 2px solid var(--border-color);
-    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
 }
 
 .role-indicator::before {
@@ -117,14 +116,14 @@
 }
 
 .error-message {
-    background: linear-gradient(135deg, var(--danger-color), #f0e8e8);
+    background: var(--danger-color);
     color: var(--text-color);
-    border: 2px solid var(--border-color);
+    border: 1px solid #f87171;
     box-shadow: var(--shadow);
 }
 
 .retry-btn {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: var(--primary-color);
     color: var(--text-color);
     border: none;
     padding: 0.75rem 1.5rem;
@@ -138,7 +137,7 @@
 }
 
 .retry-btn:hover {
-    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    background: var(--secondary-color);
     transform: translateY(-2px);
     box-shadow: var(--shadow);
     color: var(--dark-color);
@@ -146,11 +145,10 @@
 
 /* 聊天输入区域增强 */
 .input-section {
-    background: linear-gradient(to top, var(--cream-color), var(--milk-color));
-    border-top: 2px solid var(--border-color);
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
     position: sticky;
     bottom: 0;
-    backdrop-filter: blur(20px);
     z-index: 20;
 }
 
@@ -167,18 +165,17 @@
 
 .chat-input textarea {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
+    background: #ffffff;
     color: var(--text-color);
 }
 
 .chat-input textarea:focus {
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0 4px 20px rgba(139, 125, 107, 0.1);
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .send-btn {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: var(--primary-color);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -187,7 +184,7 @@
 }
 
 .send-btn:hover {
-    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    background: var(--secondary-color);
     transform: translateY(-2px);
     box-shadow: var(--shadow);
     color: var(--dark-color);
@@ -217,16 +214,16 @@
 }
 
 .chat-container::-webkit-scrollbar-track {
-    background: var(--cream-color);
+    background: var(--secondary-color);
     border-radius: 8px;
 }
 
 .chat-container::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    background: var(--border-color);
     border-radius: 8px;
-    border: 2px solid var(--cream-color);
+    border: 2px solid var(--secondary-color);
 }
 
 .chat-container::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    background: var(--text-light);
 }

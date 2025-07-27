@@ -66,6 +66,14 @@
                 </div>
                 <button id="generate-role-btn" class="btn btn-primary">生成角色</button>
                 <div id="role-generation-status" class="role-status"></div>
+                
+                <div class="context-options">
+                    <label class="context-option">
+                        <input type="checkbox" id="clear-context-on-role-change">
+                        <span>切换角色时清空对话上下文</span>
+                    </label>
+                    <small class="context-hint">临时覆盖全局设置，仅对本次角色切换生效</small>
+                </div>
             </div>
             
             <div id="current-role-display" class="current-role-display">
@@ -85,6 +93,16 @@
             <div class="setting-item">
                 <label for="api-url">API URL:</label>
                 <input type="text" id="api-url" value="https://api.deepseek.com/v1/chat/completions" placeholder="API地址">
+            </div>
+            <div class="setting-item">
+                <label for="preserve-context">角色切换时保留对话上下文:</label>
+                <div class="toggle-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="preserve-context">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">开启后切换角色不会清空聊天记录</span>
+                </div>
             </div>
             <button id="save-settings" class="btn btn-primary">保存设置</button>
         </div>
