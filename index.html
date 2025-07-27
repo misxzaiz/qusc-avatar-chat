@@ -50,9 +50,11 @@
                 <div class="input-section">
                     <div class="chat-input">
                         <button id="input-mode-toggle" class="input-mode-toggle-btn" title="切换输入模式">💬</button>
-                        <button id="voice-record-btn" class="voice-record-btn hidden" title="点击录音">🎤</button>
-                        <textarea id="message-input" placeholder="输入消息..." class="input-field"></textarea>
-                        <button id="send-btn" class="btn btn-primary">发送</button>
+                        <div>
+                            <textarea id="message-input" placeholder="输入消息..." class="input-field"></textarea>
+                            <button id="send-btn" class="btn btn-primary">发送</button>
+                            <button id="voice-record-btn" class="voice-record-btn hidden" title="点击录音">🎤</button>
+                        </div>
                     </div>
                     <div id="voice-status" class="voice-status hidden">
                         <div class="voice-indicator">

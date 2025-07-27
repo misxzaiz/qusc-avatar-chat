@@ -106,7 +106,7 @@ class CompactInputModeManager {
         if (!modeToggleBtn || !messageInput || !voiceRecordBtn) return;
 
         if (this.currentMode === 'text') {
-            // 文字模式
+            // 文字模式：只显示输入框和发送按钮
             modeToggleBtn.textContent = '💬';
             modeToggleBtn.title = '切换到语音模式';
             messageInput.style.display = 'block';
@@ -120,10 +120,11 @@ class CompactInputModeManager {
                 voiceStatus.classList.add('hidden');
             }
         } else {
-            // 语音模式
+            // 语音模式：麦克风、输入框、发送按钮同时显示
             modeToggleBtn.textContent = '🎤';
             modeToggleBtn.title = '切换到文字模式';
-            messageInput.style.display = 'none';
+            messageInput.style.display = 'block'; // 保持显示
+            messageInput.placeholder = '语音识别结果...';
             voiceRecordBtn.classList.remove('hidden');
             
             if (voiceSettingsPanel) {
@@ -240,7 +241,7 @@ class CompactInputModeManager {
         const messageInput = document.getElementById('message-input');
         const voiceStatus = document.getElementById('voice-status');
         
-        // 更新隐藏的输入框内容（用于发送）
+        // 更新输入框内容（现在始终可见）
         if (messageInput) {
             const displayText = result.final + (result.interim ? ` ${result.interim}` : '');
             messageInput.value = displayText;
