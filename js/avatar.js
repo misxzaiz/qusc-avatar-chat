@@ -173,61 +173,6 @@ class AvatarController {
             }, 150);
         });
     }
-
-    // 全屏模式相关方法
-    enterFullscreen() {
-        const fullscreenAvatar = document.getElementById('fullscreen-avatar');
-        if (fullscreenAvatar) {
-            fullscreenAvatar.classList.remove('hidden');
-            this.setupFullscreenMouseFollowing();
-        }
-    }
-
-    exitFullscreen() {
-        const fullscreenAvatar = document.getElementById('fullscreen-avatar');
-        if (fullscreenAvatar) {
-            fullscreenAvatar.classList.add('hidden');
-        }
-    }
-
-    setupFullscreenMouseFollowing() {
-        const fullscreenAvatar = document.querySelector('.avatar-large');
-        if (!fullscreenAvatar) return;
-
-        const mouseMoveHandler = (e) => {
-            this.followMouseFullscreen(e.clientX, e.clientY, fullscreenAvatar);
-        };
-
-        document.addEventListener('mousemove', mouseMoveHandler);
-        
-        // 清理事件监听器
-        setTimeout(() => {
-            document.removeEventListener('mousemove', mouseMoveHandler);
-        }, 1000); // 1秒后清理，避免内存泄漏
-    }
-
-    followMouseFullscreen(mouseX, mouseY, avatarElement) {
-        const pupils = avatarElement.querySelectorAll('.pupil-large');
-        
-        pupils.forEach(pupil => {
-            const eye = pupil.parentElement;
-            const eyeRect = eye.getBoundingClientRect();
-            const eyeCenterX = eyeRect.left + eyeRect.width / 2;
-            const eyeCenterY = eyeRect.top + eyeRect.height / 2;
-
-            const deltaX = mouseX - eyeCenterX;
-            const deltaY = mouseY - eyeCenterY;
-            const angle = Math.atan2(deltaY, deltaX);
-            
-            const maxDistance = Math.min(eyeRect.width, eyeRect.height) / 4;
-            const distance = Math.min(maxDistance, Math.sqrt(deltaX * deltaX + deltaY * deltaY) / 8);
-            
-            const offsetX = Math.cos(angle) * distance;
-            const offsetY = Math.sin(angle) * distance;
-            
-            pupil.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`;
-        });
-    }
 }
 
 window.AvatarController = AvatarController;

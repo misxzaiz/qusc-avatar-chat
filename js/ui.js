@@ -1,7 +1,6 @@
 class UIManager {
     constructor() {
         this.setupModals();
-        this.setupFullscreen();
         this.setupSettings();
         this.setupHistory();
         this.loadSettings();
@@ -45,33 +44,6 @@ class UIManager {
         window.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal')) {
                 e.target.style.display = 'none';
-            }
-        });
-    }
-
-    setupFullscreen() {
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const fullscreenAvatar = document.getElementById('fullscreen-avatar');
-        const fullscreenClose = document.querySelector('.fullscreen-close');
-
-        fullscreenBtn.addEventListener('click', () => {
-            if (window.avatarController) {
-                window.avatarController.enterFullscreen();
-            }
-        });
-
-        fullscreenClose.addEventListener('click', () => {
-            if (window.avatarController) {
-                window.avatarController.exitFullscreen();
-            }
-        });
-
-        // ESC键退出全屏
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !fullscreenAvatar.classList.contains('hidden')) {
-                if (window.avatarController) {
-                    window.avatarController.exitFullscreen();
-                }
             }
         });
     }

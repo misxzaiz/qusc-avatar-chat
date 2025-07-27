@@ -114,46 +114,6 @@
         width: 95%;
         border-radius: 20px;
     }
-    
-    .fullscreen-avatar {
-        padding: 1rem;
-    }
-    
-    .avatar-large {
-        width: 300px;
-        height: 300px;
-    }
-    
-    .eyes-large {
-        gap: 36px;
-    }
-    
-    .eye-large {
-        width: 36px;
-        height: 36px;
-    }
-    
-    .pupil-large {
-        width: 20px;
-        height: 20px;
-    }
-    
-    .mouth-large {
-        width: 54px;
-        height: 27px;
-    }
-    
-    .mouth-shape-large {
-        border-width: 4px;
-    }
-    
-    .fullscreen-close {
-        top: 1rem;
-        right: 1rem;
-        width: 48px;
-        height: 48px;
-        font-size: 1.5rem;
-    }
 }
 
 /* 小屏手机适配 */
