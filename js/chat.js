@@ -248,7 +248,7 @@ class ChatManager {
         time.classList.add('message-time');
         time.textContent = this.formatTime(message.timestamp);
 
-        messageElement.appendChild(messageIcon);
+        // messageElement.appendChild(messageIcon);
         messageElement.appendChild(content);
         content.appendChild(time);
 
@@ -425,9 +425,7 @@ class ChatManager {
         // 通用的回答选项
         const commonReplies = [
             "继续",
-            "详细说明",
-            "举个例子",
-            "换个思路"
+            "详细说明"
         ];
         
         // 根据AI回复内容添加智能选项
@@ -503,7 +501,7 @@ class ChatManager {
         }
         
         // 随机打乱并限制数量
-        return this.shuffleArray(selectedReplies).slice(0, Math.min(4, selectedReplies.length));
+        return this.shuffleArray(selectedReplies).slice(0, Math.min(2, selectedReplies.length));
     }
     
     // 数组洗牌算法

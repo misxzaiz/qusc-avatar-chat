@@ -111,17 +111,17 @@
     }
     
     .message.user {
-        margin-left: 10% !important;
+        margin-left: 80% !important;
     }
     
     .message.assistant {
-        margin-right: 10% !important;
+        margin-right: 15% !important;
     }
     
     .message-avatar {
-        width: 36px;
-        height: 36px;
-        font-size: 0.9rem;
+        width: 10px;
+        height: 10px;
+        font-size: 0.6rem;
     }
     
     .header-controls {
