@@ -5,6 +5,25 @@
     overflow-y: auto;
 }
 
+/* 帮助模态框滚动条样式 */
+.help-modal::-webkit-scrollbar {
+    width: 6px;
+}
+
+.help-modal::-webkit-scrollbar-track {
+    background: var(--secondary-color);
+    border-radius: 3px;
+}
+
+.help-modal::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.help-modal::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+}
+
 .help-tab-nav {
     display: flex;
     border-bottom: 2px solid var(--border-color);
