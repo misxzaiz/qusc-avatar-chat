@@ -454,6 +454,32 @@ body {
     margin: 0;
 }
 
+.command-textarea {
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+}
+
+.command-hint {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--text-light);
+    font-size: 0.75rem;
+    line-height: 1.4;
+}
+
+.role-commands {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--secondary-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.role-commands .setting-item {
+    margin-bottom: 0.75rem;
+}
+
 .context-hint {
     display: block;
     margin-top: 0.5rem;
@@ -489,6 +515,150 @@ body {
 .history-item-time {
     font-size: 0.8rem;
     color: var(--secondary-color);
+}
+
+.btn-voice {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    color: var(--text-color);
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    font-size: 1.3rem;
+    border-radius: 50%;
+    border: 2px solid var(--border-color);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-voice::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 36px;
+    height: 36px;
+    background: radial-gradient(circle, transparent 30%, rgba(74, 85, 104, 0.1) 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-voice:hover {
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border-color: var(--dark-color);
+    color: var(--dark-color);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.btn-voice:hover::before {
+    opacity: 1;
+}
+
+.btn-voice.recording {
+    background: linear-gradient(145deg, #ef4444, #dc2626);
+    color: white;
+    border-color: #b91c1c;
+    animation: voice-pulse 1.5s ease-in-out infinite;
+    box-shadow: 
+        0 6px 20px rgba(239, 68, 68, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-voice.recording::before {
+    background: radial-gradient(circle, transparent 30%, rgba(255, 255, 255, 0.2) 70%);
+    opacity: 1;
+}
+
+.voice-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 25px;
+    margin-top: 0.75rem;
+    border: 2px solid var(--border-color);
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    animation: voice-status-enter 0.3s ease-out;
+}
+
+.voice-indicator {
+    display: flex;
+    gap: 3px;
+    align-items: end;
+    height: 24px;
+}
+
+.voice-wave {
+    width: 4px;
+    height: 8px;
+    background: linear-gradient(to top, var(--dark-color), #6b7280);
+    border-radius: 2px;
+    animation: voice-wave-animate 1.4s ease-in-out infinite;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.voice-wave:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.voice-wave:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.voice-text {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes voice-pulse {
+    0%, 100% { 
+        transform: scale(1); 
+        box-shadow: 
+            0 6px 20px rgba(239, 68, 68, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    50% { 
+        transform: scale(1.05); 
+        box-shadow: 
+            0 8px 25px rgba(239, 68, 68, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+}
+
+@keyframes voice-wave-animate {
+    0%, 100% { 
+        height: 8px; 
+        opacity: 0.7;
+    }
+    50% { 
+        height: 24px; 
+        opacity: 1;
+    }
+}
+
+@keyframes voice-status-enter {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .hidden {

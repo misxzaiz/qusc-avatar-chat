@@ -53,6 +53,19 @@ class App {
 
     checkInitialSettings() {
         const settings = StorageManager.getSettings();
+        
+        if (!settings.apiKey) {
+            // 如果没有API密钥，显示设置提示
+            setTimeout(() => {
+                const provider = settings.apiProvider || CONFIG.API.DEFAULT_PROVIDER;
+                const providerName = provider === 'claude' ? 'Claude' : 'DeepSeek';
+                window.uiManager.showNotification(
+                    `请先在设置中配置${providerName} API密钥`, 
+                    'warning', 
+                    5000
+                );
+            }, 1000);
+        }
     }
 
     showWelcomeMessage() {

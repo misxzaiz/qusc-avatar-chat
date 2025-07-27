@@ -1,9 +1,141 @@
 class UIManager {
     constructor() {
+        this.speechManager = null;
+        this.voiceButton = null;
+        this.voiceStatus = null;
+        this.messageInput = null;
+        
         this.setupModals();
         this.setupSettings();
         this.setupHistory();
+        this.setupVoiceInput();
         this.loadSettings();
+    }
+
+    setupVoiceInput() {
+        this.voiceButton = document.getElementById('voice-btn');
+        this.voiceStatus = document.getElementById('voice-status');
+        this.messageInput = document.getElementById('message-input');
+
+        if (!this.voiceButton) {
+            console.warn('语音按钮未找到');
+            return;
+        }
+
+        // 初始化语音管理器
+        this.speechManager = new SpeechManager();
+
+        // 检查浏览器支持
+        if (!this.speechManager.getIsSupported()) {
+            this.voiceButton.style.display = 'none';
+            return;
+        }
+
+        // 设置语音回调
+        this.speechManager.setOnStart(() => {
+            this.onVoiceStart();
+        });
+
+        this.speechManager.setOnResult((result) => {
+            this.onVoiceResult(result);
+        });
+
+        this.speechManager.setOnEnd(() => {
+            this.onVoiceEnd();
+        });
+
+        this.speechManager.setOnError((error) => {
+            this.onVoiceError(error);
+        });
+
+        // 语音按钮点击事件
+        this.voiceButton.addEventListener('click', () => {
+            this.toggleVoiceRecording();
+        });
+
+        console.log('语音输入功能初始化完成');
+    }
+
+    toggleVoiceRecording() {
+        if (this.speechManager.getIsRecording()) {
+            this.speechManager.stop();
+        } else {
+            this.speechManager.start();
+        }
+    }
+
+    onVoiceStart() {
+        this.voiceButton.classList.add('recording');
+        this.voiceButton.textContent = '🔴';
+        this.voiceStatus.classList.remove('hidden');
+        
+        // 头像显示倾听状态
+        if (window.avatarController) {
+            window.avatarController.startListening();
+        }
+        
+        // 更新状态文本
+        const voiceText = this.voiceStatus.querySelector('.voice-text');
+        if (voiceText) {
+            voiceText.textContent = '正在听...';
+        }
+    }
+
+    onVoiceResult(result) {
+        // 更新输入框内容
+        const displayText = result.final + (result.interim ? ` ${result.interim}` : '');
+        this.messageInput.value = displayText;
+        
+        // 更新状态文本
+        const voiceText = this.voiceStatus.querySelector('.voice-text');
+        if (voiceText) {
+            if (result.interim) {
+                voiceText.textContent = `识别中: ${result.interim}`;
+            } else if (result.final) {
+                voiceText.textContent = '识别完成';
+            }
+        }
+        
+        // 如果有最终结果，准备发送
+        if (result.isFinal && result.final.trim()) {
+            setTimeout(() => {
+                this.speechManager.stop();
+            }, 500);
+        }
+    }
+
+    onVoiceEnd() {
+        this.voiceButton.classList.remove('recording');
+        this.voiceButton.textContent = '🎤';
+        this.voiceStatus.classList.add('hidden');
+        
+        // 如果输入框有内容，自动发送
+        const inputValue = this.messageInput.value.trim();
+        if (inputValue && window.chatManager) {
+            // 延迟一点让用户看到识别结果
+            setTimeout(() => {
+                window.chatManager.sendMessage();
+            }, 300);
+        }
+        
+        // 头像恢复中性状态
+        if (window.avatarController) {
+            window.avatarController.setEmotion('neutral');
+        }
+    }
+
+    onVoiceError(error) {
+        this.voiceButton.classList.remove('recording');
+        this.voiceButton.textContent = '🎤';
+        this.voiceStatus.classList.add('hidden');
+        
+        // 显示错误通知
+        this.showNotification(error, 'error');
+        
+        // 头像显示难过表情
+        if (window.avatarController) {
+            window.avatarController.setEmotion('sad');
+        }
     }
 
     setupModals() {
@@ -51,20 +183,19 @@ class UIManager {
     setupSettings() {
         const saveSettingsBtn = document.getElementById('save-settings');
         const apiKeyInput = document.getElementById('api-key');
-        const apiUrlInput = document.getElementById('api-url');
 
         saveSettingsBtn.addEventListener('click', () => {
             this.saveSettings();
         });
 
         // Enter键保存设置
-        [apiKeyInput, apiUrlInput].forEach(input => {
-            input.addEventListener('keydown', (e) => {
+        if (apiKeyInput) {
+            apiKeyInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     this.saveSettings();
                 }
             });
-        });
+        }
     }
 
     setupHistory() {
@@ -89,38 +220,33 @@ class UIManager {
     loadSettingsToModal() {
         const settings = StorageManager.getSettings();
         
-        document.getElementById('api-key').value = settings.apiKey || '';
-        document.getElementById('api-url').value = settings.apiUrl || CONFIG.API.DEEPSEEK_URL;
-        document.getElementById('preserve-context').checked = settings.preserveContext || false;
+        // 设置API密钥
+        const apiKeyInput = document.getElementById('api-key');
+        if (apiKeyInput) {
+            apiKeyInput.value = settings.apiKey || '';
+        }
+        
+        // 设置上下文保留选项
+        const preserveContextCheckbox = document.getElementById('preserve-context');
+        if (preserveContextCheckbox) {
+            preserveContextCheckbox.checked = settings.preserveContext || false;
+        }
     }
 
     async saveSettings() {
-        const apiKey = document.getElementById('api-key').value.trim();
-        const apiUrl = document.getElementById('api-url').value.trim();
-        const preserveContext = document.getElementById('preserve-context').checked;
+        const apiKeyInput = document.getElementById('api-key');
+        const preserveContextCheckbox = document.getElementById('preserve-context');
+        
+        const apiKey = apiKeyInput?.value.trim() || '';
+        const preserveContext = preserveContextCheckbox?.checked || false;
 
         if (!apiKey) {
-            this.showNotification('请输入API密钥', 'error');
-            return;
-        }
-
-        if (!apiUrl) {
-            this.showNotification('请输入API地址', 'error');
-            return;
-        }
-
-        // 验证API地址格式
-        try {
-            new URL(apiUrl);
-        } catch (error) {
-            this.showNotification('API地址格式不正确', 'error');
+            this.showNotification('请输入DeepSeek API密钥', 'error');
             return;
         }
 
         const settings = {
             apiKey: apiKey,
-            apiUrl: apiUrl,
-            model: CONFIG.API.DEFAULT_MODEL,
             preserveContext: preserveContext
         };
 
@@ -132,21 +258,11 @@ class UIManager {
             window.chatManager.apiManager.updateSettings(settings);
         }
 
-        // 测试连接
-        this.showNotification('正在测试连接...', 'info');
-        
-        try {
-            const testResult = await window.chatManager.apiManager.testConnection();
-            
-            if (testResult.success) {
-                this.showNotification('设置保存成功，连接正常！', 'success');
-                document.getElementById('settings-modal').style.display = 'none';
-            } else {
-                this.showNotification(`设置已保存，但连接测试失败: ${testResult.message}`, 'warning');
-            }
-        } catch (error) {
-            this.showNotification(`设置已保存，但连接测试失败: ${error.message}`, 'warning');
-        }
+        // 显示成功消息
+        this.showNotification('DeepSeek API设置已保存', 'success');
+
+        // 关闭设置模态框
+        document.getElementById('settings-modal').style.display = 'none';
     }
 
     loadHistoryToModal() {

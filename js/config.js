@@ -1,7 +1,7 @@
 const CONFIG = {
     API: {
         DEEPSEEK_URL: 'https://api.deepseek.com/v1/chat/completions',
-        DEFAULT_MODEL: 'deepseek-chat',
+        DEEPSEEK_MODEL: 'deepseek-chat',
         TIMEOUT: 30000,
         MAX_TOKENS: 2048
     },
@@ -26,6 +26,13 @@ const CONFIG = {
         MOUSE_FOLLOW: true,
         ANIMATION_ENABLED: true,
         RANDOM_BLINK: true
+    },
+    SPEECH: {
+        RECOGNITION_LANG: 'zh-CN',
+        CONTINUOUS: true,
+        INTERIM_RESULTS: true,
+        MAX_ALTERNATIVES: 1,
+        AUTO_STOP_TIMEOUT: 3000
     },
     ROLE_GENERATION: {
         SYSTEM_PROMPT: `你是一个角色生成助手。根据用户提供的关键词，生成一个有趣的AI角色人设。

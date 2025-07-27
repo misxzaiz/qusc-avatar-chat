@@ -17,6 +17,12 @@ class RoleGenerator {
                 this.generateRole();
             }
         });
+
+        // 添加强制执行命令按钮事件
+        const executeCommandBtn = document.getElementById('execute-command-btn');
+        if (executeCommandBtn) {
+            executeCommandBtn.addEventListener('click', () => this.executeForceCommand());
+        }
     }
 
     async generateRole() {
@@ -114,6 +120,63 @@ class RoleGenerator {
         // 重置复选框
         if (clearContextCheckbox) {
             clearContextCheckbox.checked = false;
+        }
+
+        // 检查是否有强制执行命令
+        const forceCommand = document.getElementById('force-command').value.trim();
+        if (forceCommand) {
+            // 延迟执行命令，让角色先应用
+            setTimeout(() => {
+                this.executeCommand(forceCommand);
+            }, 500);
+        }
+    }
+
+    async executeForceCommand() {
+        const forceCommandTextarea = document.getElementById('force-command');
+        const command = forceCommandTextarea.value.trim();
+        
+        if (!command) {
+            this.showStatus('请输入要执行的命令', 'error');
+            return;
+        }
+
+        await this.executeCommand(command);
+    }
+
+    async executeCommand(command) {
+        try {
+            this.showStatus('正在执行命令...', 'info');
+            
+            if (window.avatarController) {
+                window.avatarController.startThinking();
+            }
+
+            // 检查是否有聊天管理器
+            if (!window.chatManager) {
+                throw new Error('聊天管理器未初始化');
+            }
+
+            // 直接发送命令到聊天
+            const messageInput = document.getElementById('message-input');
+            if (messageInput) {
+                messageInput.value = command;
+                await window.chatManager.sendMessage();
+            }
+            
+            this.showStatus('命令执行成功', 'success');
+            
+            if (window.avatarController) {
+                window.avatarController.showExcitement();
+            }
+
+        } catch (error) {
+            console.error('命令执行失败:', error);
+            this.showStatus(`命令执行失败: ${error.message}`, 'error');
+            
+            if (window.avatarController) {
+                window.avatarController.setEmotion('sad');
+            }
         }
     }
 

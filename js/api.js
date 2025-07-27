@@ -11,7 +11,7 @@ class APIManager {
 
     async sendMessage(messages, options = {}) {
         if (!this.settings.apiKey) {
-            throw new Error('请先设置API密钥');
+            throw new Error('请先设置DeepSeek API密钥');
         }
 
         const {
@@ -24,7 +24,7 @@ class APIManager {
         this.controller = new AbortController();
 
         const requestBody = {
-            model: this.settings.model || CONFIG.API.DEFAULT_MODEL,
+            model: CONFIG.API.DEEPSEEK_MODEL,
             messages: messages,
             stream: stream,
             max_tokens: CONFIG.API.MAX_TOKENS,
@@ -32,7 +32,7 @@ class APIManager {
         };
 
         try {
-            const response = await fetch(this.settings.apiUrl, {
+            const response = await fetch(CONFIG.API.DEEPSEEK_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

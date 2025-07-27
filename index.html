@@ -47,7 +47,16 @@
                 <div class="input-section">
                     <div class="chat-input">
                         <textarea id="message-input" placeholder="输入消息..." class="input-field"></textarea>
+                        <button id="voice-btn" class="btn btn-voice" title="语音输入">🎤</button>
                         <button id="send-btn" class="btn btn-primary">发送</button>
+                    </div>
+                    <div id="voice-status" class="voice-status hidden">
+                        <div class="voice-indicator">
+                            <div class="voice-wave"></div>
+                            <div class="voice-wave"></div>
+                            <div class="voice-wave"></div>
+                        </div>
+                        <span class="voice-text">正在听...</span>
                     </div>
                 </div>
             </div>
@@ -65,6 +74,15 @@
                 </div>
                 <button id="generate-role-btn" class="btn btn-primary">生成角色</button>
                 <div id="role-generation-status" class="role-status"></div>
+                
+                <div class="role-commands">
+                    <div class="setting-item">
+                        <label for="force-command">强制执行命令:</label>
+                        <textarea id="force-command" placeholder="输入需要角色强制执行的命令或指令..." class="input-field command-textarea" rows="3"></textarea>
+                        <small class="command-hint">该命令将在角色应用时自动执行，可用于设置特定行为或模式</small>
+                    </div>
+                    <button id="execute-command-btn" class="btn btn-secondary">立即执行命令</button>
+                </div>
                 
                 <div class="context-options">
                     <label class="context-option">
@@ -87,11 +105,7 @@
             <h2>设置</h2>
             <div class="setting-item">
                 <label for="api-key">DeepSeek API Key:</label>
-                <input type="password" id="api-key" placeholder="请输入API Key">
-            </div>
-            <div class="setting-item">
-                <label for="api-url">API URL:</label>
-                <input type="text" id="api-url" value="https://api.deepseek.com/v1/chat/completions" placeholder="API地址">
+                <input type="password" id="api-key" placeholder="请输入DeepSeek API Key" class="input-field">
             </div>
             <div class="setting-item">
                 <label for="preserve-context">角色切换时保留对话上下文:</label>
@@ -120,6 +134,7 @@
     <script src="js/storage.js"></script>
     <script src="js/api.js"></script>
     <script src="js/avatar.js"></script>
+    <script src="js/speech.js"></script>
     <script src="js/chat.js"></script>
     <script src="js/role-generator.js"></script>
     <script src="js/ui.js"></script>
