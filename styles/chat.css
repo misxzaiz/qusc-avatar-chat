@@ -148,8 +148,10 @@
 .input-section {
     background: linear-gradient(to top, var(--cream-color), var(--milk-color));
     border-top: 2px solid var(--border-color);
-    position: relative;
+    position: sticky;
+    bottom: 0;
     backdrop-filter: blur(20px);
+    z-index: 20;
 }
 
 .input-section::before {

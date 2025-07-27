@@ -50,6 +50,9 @@ body {
     box-shadow: var(--soft-shadow);
     border-bottom: 2px solid var(--border-color);
     backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .header h1 {
@@ -70,6 +73,7 @@ body {
     flex: 1;
     display: flex;
     height: calc(100vh - 80px);
+    position: relative;
 }
 
 .avatar-section {
@@ -80,7 +84,10 @@ body {
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    position: relative;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 10;
 }
 
 .avatar-section::before {
@@ -105,6 +112,8 @@ body {
     padding: 1.5rem;
     overflow-y: auto;
     background: linear-gradient(to bottom, var(--milk-color) 0%, var(--background-color) 100%);
+    max-height: calc(100vh - 200px);
+    position: relative;
 }
 
 .messages {
@@ -113,14 +122,18 @@ body {
     gap: 1rem;
     max-width: 800px;
     margin: 0 auto;
+    padding-bottom: 2rem;
+    min-height: 100%;
 }
 
 .input-section {
     padding: 1.5rem;
     background: linear-gradient(to top, var(--cream-color), var(--milk-color));
     border-top: 2px solid var(--border-color);
-    position: relative;
+    position: sticky;
+    bottom: 0;
     backdrop-filter: blur(20px);
+    z-index: 20;
 }
 
 .input-section::before {
