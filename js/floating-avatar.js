@@ -101,13 +101,7 @@ class FloatingAvatar {
         fileInput.style.display = 'none';
         fileInput.addEventListener('change', (e) => this.handleMediaUpload(e));
         
-        const uploadBtn = document.createElement('button');
-        uploadBtn.classList.add('floating-avatar-btn', 'upload-btn');
-        uploadBtn.innerHTML = '📁';
-        uploadBtn.addEventListener('click', () => fileInput.click());
-        
         mediaSelector.appendChild(fileInput);
-        mediaSelector.appendChild(uploadBtn);
         content.appendChild(mediaSelector);
         
         // 组装窗口
