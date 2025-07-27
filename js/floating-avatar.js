@@ -6,6 +6,8 @@ class FloatingAvatar {
         this.isAnimating = false;
         this.mediaType = 'cartoon'; // 'cartoon', 'image', 'video'
         this.mediaContent = null;
+        this.width = 180; // 默认宽度
+        this.height = 100; // 默认高度
         
         // 表情状态
         this.emotions = {
@@ -45,7 +47,7 @@ class FloatingAvatar {
         header.classList.add('floating-avatar-header');
         
         const title = document.createElement('span');
-        title.textContent = '表情助手';
+        title.textContent = '';
         title.classList.add('floating-avatar-title');
         
         // 控制按钮
@@ -58,6 +60,13 @@ class FloatingAvatar {
         typeToggle.innerHTML = '🎭';
         typeToggle.title = '切换显示类型';
         typeToggle.addEventListener('click', () => this.toggleMediaType());
+        
+        // 尺寸设置按钮
+        const sizeBtn = document.createElement('button');
+        sizeBtn.classList.add('floating-avatar-btn', 'size-btn');
+        sizeBtn.innerHTML = '📏';
+        sizeBtn.title = '调整尺寸';
+        sizeBtn.addEventListener('click', () => this.toggleSizeControls());
         
         // 最小化按钮
         const minimizeBtn = document.createElement('button');
@@ -74,6 +83,7 @@ class FloatingAvatar {
         closeBtn.addEventListener('click', () => this.close());
         
         controls.appendChild(typeToggle);
+        controls.appendChild(sizeBtn);
         controls.appendChild(minimizeBtn);
         controls.appendChild(closeBtn);
         
@@ -104,15 +114,99 @@ class FloatingAvatar {
         mediaSelector.appendChild(fileInput);
         content.appendChild(mediaSelector);
         
+        // 创建尺寸控制面板
+        const sizeControls = document.createElement('div');
+        sizeControls.classList.add('floating-avatar-size-controls');
+        sizeControls.style.display = 'none';
+        
+        const sizeLabel = document.createElement('div');
+        sizeLabel.textContent = '尺寸设置';
+        sizeLabel.classList.add('size-label');
+        
+        const sizeInputs = document.createElement('div');
+        sizeInputs.classList.add('size-inputs');
+        
+        const widthGroup = document.createElement('div');
+        widthGroup.classList.add('input-group');
+        const widthLabel = document.createElement('label');
+        widthLabel.textContent = '宽度:';
+        const widthInput = document.createElement('input');
+        widthInput.type = 'number';
+        widthInput.min = '100';
+        widthInput.max = '500';
+        widthInput.value = this.width;
+        widthInput.classList.add('size-input');
+        widthInput.addEventListener('change', (e) => this.setSize(parseInt(e.target.value), null));
+        widthGroup.appendChild(widthLabel);
+        widthGroup.appendChild(widthInput);
+        
+        const heightGroup = document.createElement('div');
+        heightGroup.classList.add('input-group');
+        const heightLabel = document.createElement('label');
+        heightLabel.textContent = '高度:';
+        const heightInput = document.createElement('input');
+        heightInput.type = 'number';
+        heightInput.min = '100';
+        heightInput.max = '500';
+        heightInput.value = this.height;
+        heightInput.classList.add('size-input');
+        heightInput.addEventListener('change', (e) => this.setSize(null, parseInt(e.target.value)));
+        heightGroup.appendChild(heightLabel);
+        heightGroup.appendChild(heightInput);
+        
+        sizeInputs.appendChild(widthGroup);
+        sizeInputs.appendChild(heightGroup);
+        sizeControls.appendChild(sizeLabel);
+        sizeControls.appendChild(sizeInputs);
+        content.appendChild(sizeControls);
+        
         // 组装窗口
         this.container.appendChild(header);
         this.container.appendChild(content);
+        
+        // 设置初始尺寸
+        this.updateDimensions();
         
         // 添加到页面
         document.body.appendChild(this.container);
         
         // 使窗口可拖拽
         this.makeDraggable();
+    }
+
+    toggleSizeControls() {
+        const sizeControls = this.container.querySelector('.floating-avatar-size-controls');
+        const isVisible = sizeControls.style.display !== 'none';
+        sizeControls.style.display = isVisible ? 'none' : 'block';
+        
+        // 更新按钮样式
+        const sizeBtn = this.container.querySelector('.size-btn');
+        if (isVisible) {
+            sizeBtn.style.background = 'rgba(255, 255, 255, 0.2)';
+        } else {
+            sizeBtn.style.background = 'rgba(255, 255, 255, 0.4)';
+        }
+    }
+
+    updateDimensions() {
+        if (this.container) {
+            this.container.style.width = this.width + 'px';
+        }
+        if (this.avatar) {
+            this.avatar.style.height = this.height + 'px';
+        }
+    }
+
+    setSize(width, height) {
+        this.width = width || this.width;
+        this.height = height || this.height;
+        this.updateDimensions();
+        
+        // 更新输入框的值
+        const widthInput = this.container.querySelector('.size-input[type="number"]:first-of-type');
+        const heightInput = this.container.querySelector('.size-input[type="number"]:last-of-type');
+        if (widthInput) widthInput.value = this.width;
+        if (heightInput) heightInput.value = this.height;
     }
 
     createCartoonAvatar() {
