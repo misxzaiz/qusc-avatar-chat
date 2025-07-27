@@ -244,10 +244,10 @@ class RoleManager {
                     </div>
                     <div class="role-actions">
                         <button class="role-action-btn favorite-btn ${role.favorite ? 'active' : ''}" 
-                                onclick="roleManager.toggleFavorite('${role.id}')" title="收藏">
+                                onclick="window.uiManager.roleManager.toggleFavorite('${role.id}')" title="收藏">
                             ${role.favorite ? '❤️' : '🤍'}
                         </button>
-                        <button class="role-action-btn" onclick="roleManager.showRoleMenu('${role.id}')" title="更多">
+                        <button class="role-action-btn" onclick="window.uiManager.roleManager.showRoleMenu('${role.id}')" title="更多">
                             ⋯
                         </button>
                     </div>
@@ -272,10 +272,8 @@ class RoleManager {
                 </div>
                 
                 <div class="role-card-footer">
-                    <button class="btn btn-primary role-use-btn" onclick="roleManager.useRole('${role.id}')">
-                        使用角色
-                    </button>
-                    <button class="btn btn-secondary role-edit-btn" onclick="roleManager.editRole('${role.id}')">
+                    <button class="btn btn-primary role-use-btn" onclick="window.uiManager.roleManager.useRole('${role.id}')">${role.isActive ? '✓ 当前使用' : '使用角色'}</button>
+                    <button class="btn btn-secondary role-edit-btn" onclick="window.uiManager.roleManager.editRole('${role.id}')">
                         编辑
                     </button>
                 </div>
@@ -289,7 +287,7 @@ class RoleManager {
         for (let i = 1; i <= 5; i++) {
             stars.push(`
                 <span class="star ${i <= rating ? 'filled' : ''}" 
-                      onclick="roleManager.setRating('${this.currentRoleId}', ${i})">
+                      onclick="window.uiManager.roleManager.setRating('${this.currentRoleId}', ${i})">
                     ${i <= rating ? '⭐' : '☆'}
                 </span>
             `);
@@ -434,16 +432,16 @@ class RoleManager {
         const menu = document.createElement('div');
         menu.className = 'role-menu';
         menu.innerHTML = `
-            <button class="role-menu-item" onclick="roleManager.editRole('${roleId}')">
+            <button class="role-menu-item" onclick="window.uiManager.roleManager.editRole('${roleId}')">
                 ✏️ 编辑角色
             </button>
-            <button class="role-menu-item" onclick="roleManager.duplicateRole('${roleId}')">
+            <button class="role-menu-item" onclick="window.uiManager.roleManager.duplicateRole('${roleId}')">
                 📋 复制角色
             </button>
-            <button class="role-menu-item" onclick="roleManager.shareRole('${roleId}')">
+            <button class="role-menu-item" onclick="window.uiManager.roleManager.shareRole('${roleId}')">
                 📤 分享角色
             </button>
-            <button class="role-menu-item danger" onclick="roleManager.confirmDeleteRole('${roleId}')">
+            <button class="role-menu-item danger" onclick="window.uiManager.roleManager.confirmDeleteRole('${roleId}')">
                 🗑️ 删除角色
             </button>
         `;

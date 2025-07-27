@@ -79,6 +79,9 @@ class UIManager {
         // 初始化角色管理器
         this.roleManager = new RoleManager();
         
+        // 设置Tab切换功能
+        this.setupRoleTabs();
+        
         // 设置预设角色按钮
         const presetRolesBtn = document.getElementById('preset-roles-btn');
         if (presetRolesBtn) {
@@ -95,6 +98,74 @@ class UIManager {
                 this.showCreateRoleModal();
             });
         }
+    }
+
+    setupRoleTabs() {
+        const managementTab = document.getElementById('role-management-tab');
+        const generationTab = document.getElementById('role-generation-tab');
+        const managementContent = document.getElementById('role-management-content');
+        const generationContent = document.getElementById('role-generation-content');
+
+        if (!managementTab || !generationTab || !managementContent || !generationContent) {
+            return;
+        }
+
+        // Tab切换事件
+        managementTab.addEventListener('click', () => {
+            this.switchRoleTab('management');
+        });
+
+        generationTab.addEventListener('click', () => {
+            this.switchRoleTab('generation');
+        });
+    }
+
+    switchRoleTab(activeTab) {
+        const tabs = {
+            management: {
+                btn: document.getElementById('role-management-tab'),
+                content: document.getElementById('role-management-content')
+            },
+            generation: {
+                btn: document.getElementById('role-generation-tab'),
+                content: document.getElementById('role-generation-content')
+            }
+        };
+
+        // 重置所有tab状态
+        Object.values(tabs).forEach(tab => {
+            if (tab.btn && tab.content) {
+                tab.btn.classList.remove('active');
+                tab.content.classList.remove('active');
+            }
+        });
+
+        // 激活选中的tab
+        if (tabs[activeTab]) {
+            tabs[activeTab].btn.classList.add('active');
+            tabs[activeTab].content.classList.add('active');
+            
+            // 根据tab类型加载对应内容
+            if (activeTab === 'management') {
+                this.loadRoleManagementContent();
+            } else if (activeTab === 'generation') {
+                this.loadRoleGenerationContent();
+            }
+        }
+    }
+
+    loadRoleManagementContent() {
+        if (this.roleManager) {
+            // 更新统计信息
+            this.updateRoleStats();
+            // 加载并显示角色
+            this.roleManager.filterAndDisplayRoles();
+        }
+    }
+
+    loadRoleGenerationContent() {
+        // 显示当前角色信息
+        this.loadRoleToModal();
     }
 
     setupVoiceOutput() {
@@ -625,12 +696,8 @@ class UIManager {
 
     loadRoleManagerToModal() {
         if (this.roleManager) {
-            // 更新统计信息
-            this.updateRoleStats();
-            // 加载并显示角色
-            this.roleManager.filterAndDisplayRoles();
-            // 显示当前角色信息
-            this.loadRoleToModal();
+            // 默认切换到角色管理tab
+            this.switchRoleTab('management');
         }
     }
 

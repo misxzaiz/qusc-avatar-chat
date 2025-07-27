@@ -84,99 +84,111 @@
             <span class="close">&times;</span>
             <h2>🤖 角色管理中心</h2>
             
-            <!-- 角色管理工具栏 -->
-            <div class="role-toolbar">
-                <div class="role-search-container">
-                    <input type="text" id="role-search" placeholder="搜索角色..." class="role-search-input">
-                    <button id="role-search-btn" class="btn btn-icon">🔍</button>
-                </div>
-                
-                <div class="role-filters">
-                    <select id="role-category-filter" class="role-filter-select">
-                        <option value="all">所有分类</option>
-                        <option value="favorites">我的收藏</option>
-                        <option value="work">工作助手</option>
-                        <option value="study">学习教育</option>
-                        <option value="creative">创意写作</option>
-                        <option value="entertainment">娱乐休闲</option>
-                        <option value="life">生活服务</option>
-                        <option value="tech">技术开发</option>
-                        <option value="health">健康医疗</option>
-                        <option value="custom">自定义</option>
-                    </select>
+            <!-- Tab 导航 -->
+            <div class="role-tab-nav">
+                <button id="role-management-tab" class="role-tab-btn active">📋 角色管理</button>
+                <button id="role-generation-tab" class="role-tab-btn">🚀 快速生成</button>
+            </div>
+            
+            <!-- 角色管理页面 -->
+            <div id="role-management-content" class="role-tab-content active">
+                <!-- 角色管理工具栏 -->
+                <div class="role-toolbar">
+                    <div class="role-search-container">
+                        <input type="text" id="role-search" placeholder="搜索角色..." class="role-search-input">
+                        <button id="role-search-btn" class="btn btn-icon">🔍</button>
+                    </div>
                     
-                    <select id="role-sort" class="role-filter-select">
-                        <option value="name-asc">名称 A-Z</option>
-                        <option value="name-desc">名称 Z-A</option>
-                        <option value="created-desc">最新创建</option>
-                        <option value="created-asc">最早创建</option>
-                        <option value="rating-desc">评分最高</option>
-                        <option value="usage-desc">使用最多</option>
-                    </select>
-                </div>
-                
-                <div class="role-actions">
-                    <button id="create-role-btn" class="btn btn-primary">➕ 新建角色</button>
-                    <button id="import-roles-btn" class="btn btn-secondary">📥 导入</button>
-                    <button id="export-roles-btn" class="btn btn-secondary">📤 导出</button>
-                    <button id="preset-roles-btn" class="btn btn-secondary">🎭 预设角色</button>
-                </div>
-            </div>
-            
-            <!-- 角色统计信息 -->
-            <div class="role-stats-bar">
-                <div class="role-stat-item">
-                    <span class="role-stat-number" id="total-roles-count">0</span>
-                    <span class="role-stat-label">总角色</span>
-                </div>
-                <div class="role-stat-item">
-                    <span class="role-stat-number" id="favorite-roles-count">0</span>
-                    <span class="role-stat-label">收藏</span>
-                </div>
-                <div class="role-stat-item">
-                    <span class="role-stat-number" id="categories-count">0</span>
-                    <span class="role-stat-label">分类</span>
-                </div>
-            </div>
-            
-            <!-- 角色网格 -->
-            <div id="roles-grid" class="roles-grid">
-                <!-- 角色卡片将在这里动态生成 -->
-            </div>
-            
-            <!-- 快速角色生成器 -->
-            <div class="quick-role-generator">
-                <h3>🚀 快速生成角色</h3>
-                <div class="role-generator">
-                    <div class="setting-item">
-                        <label for="role-keywords">输入关键词生成角色:</label>
-                        <input type="text" id="role-keywords" placeholder="例如: 猫咪、程序员、老师..." class="input-field">
+                    <div class="role-filters">
+                        <select id="role-category-filter" class="role-filter-select">
+                            <option value="all">所有分类</option>
+                            <option value="favorites">我的收藏</option>
+                            <option value="work">工作助手</option>
+                            <option value="study">学习教育</option>
+                            <option value="creative">创意写作</option>
+                            <option value="entertainment">娱乐休闲</option>
+                            <option value="life">生活服务</option>
+                            <option value="tech">技术开发</option>
+                            <option value="health">健康医疗</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                        
+                        <select id="role-sort" class="role-filter-select">
+                            <option value="name-asc">名称 A-Z</option>
+                            <option value="name-desc">名称 Z-A</option>
+                            <option value="created-desc">最新创建</option>
+                            <option value="created-asc">最早创建</option>
+                            <option value="rating-desc">评分最高</option>
+                            <option value="usage-desc">使用最多</option>
+                        </select>
                     </div>
-                    <button id="generate-role-btn" class="btn btn-primary">生成角色</button>
-                    <div id="role-generation-status" class="role-status"></div>
-                </div>
-                
-                <div class="role-commands">
-                    <div class="setting-item">
-                        <label for="force-command">强制执行命令:</label>
-                        <textarea id="force-command" placeholder="输入需要角色强制执行的命令或指令..." class="input-field command-textarea" rows="3"></textarea>
-                        <small class="command-hint">该命令将在角色应用时自动执行，可用于设置特定行为或模式</small>
+                    
+                    <div class="role-actions">
+                        <button id="create-role-btn" class="btn btn-primary">➕ 新建角色</button>
+                        <button id="import-roles-btn" class="btn btn-secondary">📥 导入</button>
+                        <button id="export-roles-btn" class="btn btn-secondary">📤 导出</button>
+                        <button id="preset-roles-btn" class="btn btn-secondary">🎭 预设角色</button>
                     </div>
-                    <button id="execute-command-btn" class="btn btn-secondary">立即执行命令</button>
                 </div>
                 
-                <div class="context-options">
-                    <label class="context-option">
-                        <input type="checkbox" id="clear-context-on-role-change">
-                        <span>切换角色时清空对话上下文</span>
-                    </label>
-                    <small class="context-hint">临时覆盖全局设置，仅对本次角色切换生效</small>
+                <!-- 角色统计信息 -->
+                <div class="role-stats-bar">
+                    <div class="role-stat-item">
+                        <span class="role-stat-number" id="total-roles-count">0</span>
+                        <span class="role-stat-label">总角色</span>
+                    </div>
+                    <div class="role-stat-item">
+                        <span class="role-stat-number" id="favorite-roles-count">0</span>
+                        <span class="role-stat-label">收藏</span>
+                    </div>
+                    <div class="role-stat-item">
+                        <span class="role-stat-number" id="categories-count">0</span>
+                        <span class="role-stat-label">分类</span>
+                    </div>
+                </div>
+                
+                <!-- 角色网格 -->
+                <div id="roles-grid" class="roles-grid">
+                    <!-- 角色卡片将在这里动态生成 -->
                 </div>
             </div>
             
-            <!-- 当前角色显示 -->
-            <div id="current-role-display" class="current-role-display">
-                <!-- 当前角色信息会在这里显示 -->
+            <!-- 快速生成页面 -->
+            <div id="role-generation-content" class="role-tab-content">
+                <!-- 快速角色生成器 -->
+                <div class="quick-role-generator">
+                    <h3>🚀 快速生成角色</h3>
+                    <div class="role-generator">
+                        <div class="setting-item">
+                            <label for="role-keywords">输入关键词生成角色:</label>
+                            <input type="text" id="role-keywords" placeholder="例如: 猫咪、程序员、老师..." class="input-field">
+                        </div>
+                        <button id="generate-role-btn" class="btn btn-primary">生成角色</button>
+                        <div id="role-generation-status" class="role-status"></div>
+                    </div>
+                    
+                    <div class="role-commands">
+                        <div class="setting-item">
+                            <label for="force-command">强制执行命令:</label>
+                            <textarea id="force-command" placeholder="输入需要角色强制执行的命令或指令..." class="input-field command-textarea" rows="3"></textarea>
+                            <small class="command-hint">该命令将在角色应用时自动执行，可用于设置特定行为或模式</small>
+                        </div>
+                        <button id="execute-command-btn" class="btn btn-secondary">立即执行命令</button>
+                    </div>
+                    
+                    <div class="context-options">
+                        <label class="context-option">
+                            <input type="checkbox" id="clear-context-on-role-change">
+                            <span>切换角色时清空对话上下文</span>
+                        </label>
+                        <small class="context-hint">临时覆盖全局设置，仅对本次角色切换生效</small>
+                    </div>
+                    
+                    <!-- 当前角色显示 -->
+                    <div id="current-role-display" class="current-role-display">
+                        <!-- 当前角色信息会在这里显示 -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
