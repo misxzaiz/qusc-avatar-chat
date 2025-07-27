@@ -37,6 +37,9 @@ class ChatManager {
         const content = this.messageInput.value.trim();
         if (!content || this.isTyping) return;
 
+        // 清除所有现有的快速回答按钮
+        this.clearAllQuickReplies();
+
         // 添加用户消息
         this.addMessage({
             type: 'user',
@@ -177,6 +180,9 @@ class ChatManager {
             window.avatarController.stopTalking();
             window.avatarController.reactToMessage(messageElement.message);
         }
+
+        // 生成并显示快速回答按钮
+        this.addQuickReplies(messageElement.element, fullContent);
 
         this.currentStreamElement = null;
         this.scrollToBottom();
@@ -367,10 +373,28 @@ class ChatManager {
 
     loadChatHistory() {
         const history = StorageManager.getChatHistory();
-        history.forEach(message => {
+        
+        // 先添加所有历史消息
+        history.forEach((message, index) => {
             this.addMessage(message);
         });
+        
         this.conversationHistory = [...history];
+        
+        // 为最后一条AI消息添加快速回答按钮
+        if (history.length > 0) {
+            const lastAIMessage = [...history].reverse().find(msg => msg.type === 'assistant');
+            if (lastAIMessage) {
+                // 查找对应的消息元素
+                setTimeout(() => {
+                    const assistantMessages = this.messagesContainer.querySelectorAll('.message.assistant');
+                    if (assistantMessages.length > 0) {
+                        const lastAssistantElement = assistantMessages[assistantMessages.length - 1];
+                        this.addQuickReplies(lastAssistantElement, lastAIMessage.content);
+                    }
+                }, 200);
+            }
+        }
     }
 
     formatTime(timestamp) {
@@ -384,6 +408,202 @@ class ChatManager {
     scrollToBottom() {
         requestAnimationFrame(() => {
             this.messagesContainer.parentElement.scrollTop = this.messagesContainer.parentElement.scrollHeight;
+        });
+    }
+
+    // 生成快速回答按钮
+    generateQuickReplies(aiResponse) {
+        // 根据AI回复内容智能生成快速回答选项
+        const quickReplies = [];
+        
+        // 通用的回答选项
+        const commonReplies = [
+            "继续",
+            "详细说明",
+            "举个例子",
+            "换个思路"
+        ];
+        
+        // 根据AI回复内容添加智能选项
+        const response = aiResponse.toLowerCase();
+        
+        // 问题相关
+        if (response.includes('问题') || response.includes('疑问') || response.includes('困惑')) {
+            quickReplies.push("我明白了", "还有问题");
+        }
+        
+        // 步骤/教程相关
+        if (response.includes('步骤') || response.includes('方法') || response.includes('教程') || response.includes('流程')) {
+            quickReplies.push("下一步", "重新开始", "跳过这步");
+        }
+        
+        // 代码相关
+        if (response.includes('代码') || response.includes('编程') || response.includes('script') || response.includes('function')) {
+            quickReplies.push("解释代码", "优化建议", "完整代码");
+        }
+        
+        // 建议相关
+        if (response.includes('建议') || response.includes('推荐') || response.includes('应该')) {
+            quickReplies.push("更多建议", "为什么？", "其他选择");
+        }
+        
+        // 错误/问题相关
+        if (response.includes('错误') || response.includes('失败') || response.includes('异常')) {
+            quickReplies.push("如何解决", "预防措施", "类似问题");
+        }
+        
+        // 技术相关
+        if (response.includes('api') || response.includes('接口') || response.includes('服务')) {
+            quickReplies.push("API文档", "示例代码", "参数说明");
+        }
+        
+        if (response.includes('数据库') || response.includes('sql') || response.includes('查询')) {
+            quickReplies.push("查询优化", "数据结构", "性能提升");
+        }
+        
+        // 学习相关
+        if (response.includes('学习') || response.includes('教') || response.includes('了解') || response.includes('掌握')) {
+            quickReplies.push("学习资源", "练习题目", "进阶内容");
+        }
+        
+        // 解释相关
+        if (response.includes('解释') || response.includes('说明') || response.includes('原理')) {
+            quickReplies.push("更深入", "应用场景", "对比分析");
+        }
+        
+        // 工具/软件相关
+        if (response.includes('工具') || response.includes('软件') || response.includes('应用')) {
+            quickReplies.push("推荐工具", "使用技巧", "替代方案");
+        }
+        
+        // 设计相关
+        if (response.includes('设计') || response.includes('界面') || response.includes('ui') || response.includes('ux')) {
+            quickReplies.push("设计原则", "改进建议", "案例分析");
+        }
+        
+        // 合并通用回复和智能回复，去重并限制数量
+        const allReplies = [...new Set([...quickReplies, ...commonReplies])];
+        
+        // 智能选择回复选项：如果有特定的智能回复，优先选择，否则使用通用回复
+        let selectedReplies;
+        if (quickReplies.length > 0) {
+            // 有智能回复时，混合使用智能回复和部分通用回复
+            const intelligentReplies = quickReplies.slice(0, 3);
+            const generalReplies = commonReplies.slice(0, 2);
+            selectedReplies = [...intelligentReplies, ...generalReplies];
+        } else {
+            // 没有智能回复时，使用通用回复
+            selectedReplies = commonReplies;
+        }
+        
+        // 随机打乱并限制数量
+        return this.shuffleArray(selectedReplies).slice(0, Math.min(4, selectedReplies.length));
+    }
+    
+    // 数组洗牌算法
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+    
+    // 添加快速回答按钮到消息元素
+    addQuickReplies(messageElement, aiResponse) {
+        // 只为assistant消息添加快速回答
+        if (!messageElement.classList.contains('assistant')) {
+            return;
+        }
+        
+        // 检查是否已经有快速回答按钮
+        const existingQuickReplies = messageElement.querySelector('.quick-replies');
+        if (existingQuickReplies) {
+            existingQuickReplies.remove();
+        }
+        
+        // 生成快速回答选项
+        const quickReplies = this.generateQuickReplies(aiResponse);
+        
+        if (quickReplies.length === 0) {
+            return;
+        }
+        
+        // 创建快速回答容器
+        const quickRepliesContainer = document.createElement('div');
+        quickRepliesContainer.classList.add('quick-replies');
+        
+        // 创建快速回答按钮
+        quickReplies.forEach(replyText => {
+            const quickReplyBtn = document.createElement('button');
+            quickReplyBtn.classList.add('quick-reply-btn');
+            quickReplyBtn.textContent = replyText;
+            
+            // 添加点击事件
+            quickReplyBtn.addEventListener('click', () => {
+                this.handleQuickReply(replyText);
+            });
+            
+            quickRepliesContainer.appendChild(quickReplyBtn);
+        });
+        
+        // 将快速回答容器添加到消息内容区域
+        const messageContent = messageElement.querySelector('.message-content');
+        if (messageContent) {
+            messageContent.appendChild(quickRepliesContainer);
+        }
+        
+        // 滚动到底部以确保新按钮可见
+        setTimeout(() => {
+            this.scrollToBottom();
+        }, 100);
+    }
+    
+    // 处理快速回答点击
+    handleQuickReply(replyText) {
+        // 直接发送快速回答消息
+        if (this.isTyping) return; // 如果正在输入中，不允许发送
+        
+        // 清除输入框内容（如果有的话）
+        this.messageInput.value = '';
+        this.adjustTextareaHeight();
+        
+        // 添加用户消息
+        this.addMessage({
+            type: 'user',
+            content: replyText,
+            timestamp: Date.now()
+        });
+
+        // 清除所有现有的快速回答按钮
+        this.clearAllQuickReplies();
+
+        // 显示AI思考状态
+        this.showTypingIndicator();
+        if (window.avatarController) {
+            window.avatarController.startThinking();
+        }
+
+        // 发送消息到AI
+        this.getAIResponse(replyText).catch(error => {
+            this.hideTypingIndicator();
+            this.addMessage({
+                type: 'error',
+                content: `错误: ${error.message}`,
+                timestamp: Date.now()
+            });
+            if (window.avatarController) {
+                window.avatarController.setEmotion('sad');
+            }
+        });
+    }
+    
+    // 清除所有快速回答按钮
+    clearAllQuickReplies() {
+        const quickRepliesElements = this.messagesContainer.querySelectorAll('.quick-replies');
+        quickRepliesElements.forEach(element => {
+            element.remove();
         });
     }
 }

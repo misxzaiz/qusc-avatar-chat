@@ -227,3 +227,82 @@
 .chat-container::-webkit-scrollbar-thumb:hover {
     background: var(--text-light);
 }
+
+/* 快速回答按钮样式 */
+.quick-replies {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    animation: quickRepliesSlideIn 0.3s ease-out forwards;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+@keyframes quickRepliesSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.quick-reply-btn {
+    background: var(--secondary-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    font-weight: 500;
+    box-shadow: var(--soft-shadow);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.quick-reply-btn::after {
+    content: "↗";
+    font-size: 0.7rem;
+    opacity: 0.6;
+    margin-left: 0.2rem;
+}
+
+.quick-reply-btn:hover {
+    background: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+    border-color: var(--dark-color);
+}
+
+.quick-reply-btn:hover::after {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.quick-reply-btn:active {
+    transform: translateY(0);
+    background: var(--pearl-color);
+}
+
+.quick-reply-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.quick-reply-btn:active::before {
+    width: 100px;
+    height: 100px;
+}
