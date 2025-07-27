@@ -123,6 +123,14 @@ body {
     gap: 0.5rem;
     max-width: 800px;
     margin: 0 auto;
+    align-items: flex-end; /* 确保所有元素底部对齐 */
+}
+
+.chat-input > div {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    width: 100%;
 }
 
 .input-field {
@@ -132,13 +140,14 @@ body {
     border-radius: 20px;
     font-size: 1rem;
     resize: vertical;
-    min-height: 48px;
+    min-height: 56px; /* 统一高度 */
     max-height: 120px;
     background: rgba(255, 255, 255, 0.9);
     color: var(--text-color);
     font-family: inherit;
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
+    line-height: 1.4;
 }
 
 .input-field:focus {
@@ -159,7 +168,8 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 48px;
+    min-height: 56px; /* 统一高度，与input-field保持一致 */
+    min-width: 56px;
     font-family: inherit;
     position: relative;
     overflow: hidden;
@@ -734,19 +744,22 @@ body {
     background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
     border: 1px solid #d1d5db;
     color: var(--text-color);
-    padding: 0.5rem;
-    border-radius: 8px;
+    padding: 1rem;
+    border-radius: 20px; /* 与其他按钮保持一致 */
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     font-size: 1.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 56px; /* 统一高度 */
+    min-width: 56px;
 }
 
 .voice-record-btn:hover {
     background: linear-gradient(135deg, #e5e7eb, #d1d5db);
-    transform: translateY(-1px);
+    transform: translateY(-2px); /* 与其他按钮保持一致 */
+    box-shadow: var(--shadow);
 }
 
 .voice-record-btn:active {

@@ -33,19 +33,57 @@
     }
     
     .input-section {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
         padding: 1rem;
         background: linear-gradient(to top, var(--cream-color), var(--milk-color));
+        border-top: 1px solid var(--border-color);
+        z-index: 100;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .chat-container {
+        padding-bottom: 120px; /* 为固定底部输入区域留出空间 */
     }
     
     .chat-input {
-        flex-direction: column;
-        gap: 0.75rem;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: flex-end;
+        max-width: none;
+        margin: 0;
+    }
+    
+    .chat-input > div {
+        display: flex;
+        gap: 0.5rem;
+        align-items: flex-end;
+        width: 100%;
     }
     
     .input-field {
         font-size: 16px; /* 防止iOS缩放 */
-        padding: 1rem 1.25rem;
+        padding: 0.75rem 1rem;
         border-radius: 16px;
+        flex: 1;
+        min-height: 48px; /* 移动端高度 */
+    }
+    
+    .voice-record-btn {
+        padding: 0.75rem;
+        min-width: 44px;
+        min-height: 44px; /* 与输入框保持一致 */
+        border-radius: 16px;
+        flex-shrink: 0;
+    }
+    
+    #send-btn {
+        padding: 0.75rem 1rem;
+        min-height: 48px; /* 与输入框保持一致 */
+        border-radius: 16px;
+        flex-shrink: 0;
     }
     
     .btn {
@@ -168,6 +206,7 @@
     
     .chat-container {
         padding: 0.75rem;
+        padding-bottom: 100px; /* 为小屏手机调整底部间距 */
     }
     
     .messages {
@@ -180,13 +219,33 @@
     }
     
     .input-section {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
         padding: 0.5rem;
+        background: linear-gradient(to top, var(--cream-color), var(--milk-color));
+        border-top: 1px solid var(--border-color);
+        z-index: 100;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     }
     
     .btn {
         padding: 0.6rem;
         font-size: 0.9rem;
-        min-height: 40px;
+        min-height: 44px; /* 小屏手机高度 */
+        max-height: 44px; /* 与按钮保持一致 */
+    }
+    
+    .input-field {
+        padding: 0.6rem 0.8rem;
+        min-height: 44px; /* 与按钮保持一致 */
+        max-height: 44px; /* 与按钮保持一致 */
+    }
+    
+    .voice-record-btn {
+        padding: 0.6rem;
+        min-width: 44px;
     }
     
     .btn-icon {
