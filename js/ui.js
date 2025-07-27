@@ -330,35 +330,50 @@ class UIManager {
 
         // 打开设置模态框
         settingsBtn.addEventListener('click', () => {
-            settingsModal.style.display = 'block';
+            this.openModal(settingsModal);
             this.loadSettingsToModal();
         });
 
         // 打开历史模态框
         historyBtn.addEventListener('click', () => {
-            historyModal.style.display = 'block';
+            this.openModal(historyModal);
             this.loadHistoryToModal();
         });
 
         // 打开角色模态框
         roleBtn.addEventListener('click', () => {
-            roleModal.style.display = 'block';
+            this.openModal(roleModal);
             this.loadRoleManagerToModal();
         });
 
         // 关闭模态框
         document.querySelectorAll('.modal .close').forEach(closeBtn => {
             closeBtn.addEventListener('click', (e) => {
-                e.target.closest('.modal').style.display = 'none';
+                const modal = e.target.closest('.modal');
+                this.closeModal(modal);
             });
         });
 
         // 点击模态框外部关闭
         window.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
+                this.closeModal(e.target);
             }
         });
+    }
+
+    openModal(modal) {
+        modal.style.display = 'block';
+        // 防止移动端背景滚动
+        if (window.innerWidth <= 768) {
+            document.body.classList.add('modal-open');
+        }
+    }
+
+    closeModal(modal) {
+        modal.style.display = 'none';
+        // 恢复背景滚动
+        document.body.classList.remove('modal-open');
     }
 
     setupSettings() {
@@ -553,7 +568,7 @@ class UIManager {
         // 在设置模态框中切换到语音设置
         const settingsModal = document.getElementById('settings-modal');
         if (settingsModal) {
-            settingsModal.style.display = 'block';
+            this.openModal(settingsModal);
             this.loadSettingsToModal();
             
             // 滚动到语音设置部分
@@ -662,7 +677,7 @@ class UIManager {
         this.showNotification('设置已保存', 'success');
 
         // 关闭设置模态框
-        document.getElementById('settings-modal').style.display = 'none';
+        this.closeModal(document.getElementById('settings-modal'));
     }
 
     loadHistoryToModal() {
@@ -688,7 +703,7 @@ class UIManager {
             if (historyItem) {
                 const sessionId = historyItem.dataset.sessionId;
                 this.loadHistorySession(sessionId);
-                document.getElementById('history-modal').style.display = 'none';
+                this.closeModal(document.getElementById('history-modal'));
             }
         });
     }
@@ -1007,7 +1022,7 @@ class UIManager {
             // Ctrl/Cmd + , 打开设置
             if ((e.ctrlKey || e.metaKey) && e.key === ',') {
                 e.preventDefault();
-                document.getElementById('settings-modal').style.display = 'block';
+                this.openModal(document.getElementById('settings-modal'));
                 this.loadSettingsToModal();
             }
         });
