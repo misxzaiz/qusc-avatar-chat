@@ -3,6 +3,7 @@ class BackgroundManager {
         this.currentBackground = null;
         this.backgroundType = 'default';
         this.backgroundOpacity = 0.8;
+        this.messageOpacity = 0.85; // 新增：消息框透明度
         this.maxFileSize = 10 * 1024 * 1024; // 10MB
         this.supportedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         this.supportedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
@@ -36,9 +37,11 @@ class BackgroundManager {
         const backgroundTypeSelect = document.getElementById('background-type');
         const backgroundUpload = document.getElementById('background-upload');
         const backgroundOpacitySlider = document.getElementById('background-opacity');
+        const messageOpacitySlider = document.getElementById('message-opacity');
         const clearBackgroundBtn = document.getElementById('clear-background-btn');
         const testBackgroundBtn = document.getElementById('test-background-btn');
         const backgroundOpacityValue = document.getElementById('background-opacity-value');
+        const messageOpacityValue = document.getElementById('message-opacity-value');
 
         if (backgroundTypeSelect) {
             backgroundTypeSelect.addEventListener('change', (e) => {
@@ -59,6 +62,16 @@ class BackgroundManager {
                     backgroundOpacityValue.textContent = this.backgroundOpacity.toFixed(1);
                 }
                 this.applyOpacity();
+            });
+        }
+
+        if (messageOpacitySlider) {
+            messageOpacitySlider.addEventListener('input', (e) => {
+                this.messageOpacity = parseFloat(e.target.value);
+                if (messageOpacityValue) {
+                    messageOpacityValue.textContent = this.messageOpacity.toFixed(1);
+                }
+                this.applyMessageOpacity();
             });
         }
 
@@ -87,17 +100,20 @@ class BackgroundManager {
     updateUIVisibility() {
         const uploadSection = document.getElementById('background-upload-section');
         const opacitySection = document.getElementById('background-opacity-section');
+        const messageOpacitySection = document.getElementById('message-opacity-section');
         const previewSection = document.getElementById('background-preview-section');
         const actionsSection = document.getElementById('background-actions');
 
         if (this.backgroundType === 'default') {
             uploadSection.style.display = 'none';
             opacitySection.style.display = 'none';
+            messageOpacitySection.style.display = 'none';
             previewSection.style.display = 'none';
             actionsSection.style.display = 'none';
         } else {
             uploadSection.style.display = 'block';
             opacitySection.style.display = 'block';
+            messageOpacitySection.style.display = 'block';
             previewSection.style.display = 'block';
             actionsSection.style.display = 'block';
         }
@@ -228,6 +244,9 @@ class BackgroundManager {
         // 更新遮罩透明度
         this.updateOverlayOpacity();
         
+        // 应用消息透明度
+        this.applyMessageOpacity();
+        
         console.log('Background applied:', this.currentBackground);
     }
 
@@ -252,6 +271,31 @@ class BackgroundManager {
         }
         
         console.log(`Background opacity: ${this.backgroundOpacity}, Overlay opacity: ${overlayOpacity}`);
+    }
+
+    applyMessageOpacity() {
+        // 更新消息框透明度的CSS
+        const style = document.getElementById('message-opacity-style') || document.createElement('style');
+        style.id = 'message-opacity-style';
+        style.textContent = `
+            .chat-container.has-background .message.user {
+                background: rgba(241, 243, 244, ${this.messageOpacity}) !important;
+            }
+            
+            .chat-container.has-background .message.assistant {
+                background: rgba(255, 255, 255, ${this.messageOpacity}) !important;
+            }
+            
+            .chat-container.has-background .message.system {
+                background: rgba(255, 251, 235, ${this.messageOpacity}) !important;
+            }
+        `;
+        if (!style.parentNode) {
+            document.head.appendChild(style);
+        }
+        
+        this.saveBackgroundSettings();
+        console.log(`Message opacity applied: ${this.messageOpacity}`);
     }
 
     applyOpacity() {
@@ -311,6 +355,12 @@ class BackgroundManager {
         // 移除body类
         document.body.classList.remove('has-chat-background');
 
+        // 清除消息透明度样式
+        const messageOpacityStyle = document.getElementById('message-opacity-style');
+        if (messageOpacityStyle) {
+            messageOpacityStyle.remove();
+        }
+
         const preview = document.getElementById('background-preview');
         if (preview) {
             preview.innerHTML = '<div class="preview-placeholder">暂无背景</div>';
@@ -332,7 +382,8 @@ class BackgroundManager {
         const settings = {
             backgroundType: this.backgroundType,
             currentBackground: this.currentBackground,
-            backgroundOpacity: this.backgroundOpacity
+            backgroundOpacity: this.backgroundOpacity,
+            messageOpacity: this.messageOpacity
         };
         
         StorageManager.set('background_settings', settings);
@@ -342,12 +393,14 @@ class BackgroundManager {
         const settings = StorageManager.get('background_settings', {
             backgroundType: 'default',
             currentBackground: null,
-            backgroundOpacity: 0.8
+            backgroundOpacity: 0.8,
+            messageOpacity: 0.85
         });
 
         this.backgroundType = settings.backgroundType;
         this.currentBackground = settings.currentBackground;
         this.backgroundOpacity = settings.backgroundOpacity;
+        this.messageOpacity = settings.messageOpacity || 0.85; // 兼容旧设置
 
         // 更新UI
         this.updateUIFromSettings();
@@ -356,7 +409,9 @@ class BackgroundManager {
     updateUIFromSettings() {
         const backgroundTypeSelect = document.getElementById('background-type');
         const backgroundOpacitySlider = document.getElementById('background-opacity');
+        const messageOpacitySlider = document.getElementById('message-opacity');
         const backgroundOpacityValue = document.getElementById('background-opacity-value');
+        const messageOpacityValue = document.getElementById('message-opacity-value');
 
         if (backgroundTypeSelect) {
             backgroundTypeSelect.value = this.backgroundType;
@@ -366,8 +421,16 @@ class BackgroundManager {
             backgroundOpacitySlider.value = this.backgroundOpacity;
         }
 
+        if (messageOpacitySlider) {
+            messageOpacitySlider.value = this.messageOpacity;
+        }
+
         if (backgroundOpacityValue) {
             backgroundOpacityValue.textContent = this.backgroundOpacity.toFixed(1);
+        }
+
+        if (messageOpacityValue) {
+            messageOpacityValue.textContent = this.messageOpacity.toFixed(1);
         }
 
         this.updateUIVisibility();
@@ -375,6 +438,11 @@ class BackgroundManager {
         // 如果有当前背景，更新预览
         if (this.currentBackground) {
             this.updatePreview(this.currentBackground.url, this.currentBackground.type === 'video');
+        }
+
+        // 如果有背景，应用消息透明度
+        if (this.currentBackground && this.backgroundType !== 'default') {
+            this.applyMessageOpacity();
         }
     }
 
@@ -391,7 +459,8 @@ class BackgroundManager {
         return {
             type: this.backgroundType,
             background: this.currentBackground,
-            opacity: this.backgroundOpacity
+            backgroundOpacity: this.backgroundOpacity,
+            messageOpacity: this.messageOpacity
         };
     }
 

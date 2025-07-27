@@ -216,6 +216,13 @@ if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             if (window.uiManager?.backgroundManager) {
                 window.uiManager.backgroundManager.setBackgroundFromUrl(url, 'image');
             }
+        },
+        setMessageOpacity: (opacity) => {
+            if (window.uiManager?.backgroundManager) {
+                window.uiManager.backgroundManager.messageOpacity = opacity;
+                window.uiManager.backgroundManager.applyMessageOpacity();
+                console.log(`Message opacity set to: ${opacity}`);
+            }
         }
     };
     
@@ -223,4 +230,5 @@ if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
     console.log('使用 window.debug 访问调试工具');
     console.log('使用 debug.testBackground() 测试背景功能');
     console.log('使用 debug.setImageBackground("图片URL") 设置网络图片背景');
+    console.log('使用 debug.setMessageOpacity(0.5) 设置消息框透明度 (0.0-1.0)');
 }
