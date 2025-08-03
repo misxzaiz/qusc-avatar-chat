@@ -4,7 +4,7 @@
 
 ## 💬 示例网站
 
-[Qusc-avatar-chat-demo](https://qusc.asia/)
+[Qusc-avatar-chat-demo](https://qusc-chat-1tawnnmn.edgeone.app/)
 
 ## 🌟 主要功能
 
